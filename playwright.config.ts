@@ -11,7 +11,7 @@ export default defineConfig({
   reporter: [["list"]],
   timeout: 60_000,
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: process.env.PW_BASE_URL ?? "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:3000",
+    url: process.env.PW_BASE_URL ?? "http://localhost:3000",
     reuseExistingServer: true,
     timeout: 120_000,
   },

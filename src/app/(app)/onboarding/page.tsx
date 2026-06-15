@@ -1,13 +1,11 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { OnboardingForm } from "@/components/OnboardingForm";
 
 export const metadata = { title: "Tu perfil · Brújula" };
 
 export default async function OnboardingPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   const { data: profile } = await supabase
     .from("profiles")

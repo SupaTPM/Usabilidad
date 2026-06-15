@@ -1,42 +1,62 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { RIASEC } from "@/lib/vocational/riasec";
+import { GreetingSkeleton, AssessmentsSkeleton } from "@/components/Skeletons";
 import type { RiasecDim } from "@/lib/supabase/database.types";
 
 export const metadata = { title: "Mi panel · Brújula" };
 
-export default async function DashboardPage() {
+// El shell se renderiza al instante; cada bloque transmite (stream) cuando
+// su consulta resuelve, mostrando su propio skeleton mientras tanto.
+export default function DashboardPage() {
+  return (
+    <div className="space-y-10">
+      <Suspense fallback={<GreetingSkeleton />}>
+        <Greeting />
+      </Suspense>
+      <Suspense fallback={<AssessmentsSkeleton />}>
+        <AssessmentsSection />
+      </Suspense>
+    </div>
+  );
+}
+
+async function Greeting() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const [{ data: profile }, { data: assessments }] = await Promise.all([
-    supabase.from("profiles").select("full_name").eq("id", user!.id).single(),
-    supabase
-      .from("assessments")
-      .select("id, holland_code, status, completed_at, started_at")
-      .eq("user_id", user!.id)
-      .order("started_at", { ascending: false }),
-  ]);
-
+  const user = await getCurrentUser();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user!.id)
+    .single();
   const firstName = (profile?.full_name || "").split(" ")[0];
+
+  return (
+    <header>
+      <h1 className="font-display text-3xl font-bold tracking-tight">
+        Hola{firstName ? `, ${firstName}` : ""} 👋
+      </h1>
+      <p className="mt-2 text-muted">
+        Tu actividad y tus resultados, todo en un lugar.
+      </p>
+    </header>
+  );
+}
+
+async function AssessmentsSection() {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+  const { data: assessments } = await supabase
+    .from("assessments")
+    .select("id, holland_code, status, completed_at, started_at")
+    .eq("user_id", user!.id)
+    .order("started_at", { ascending: false });
+
   const completed = (assessments ?? []).filter((a) => a.status === "completed");
 
   return (
-    <div className="space-y-10">
-      <header>
-        <h1 className="font-display text-3xl font-bold tracking-tight">
-          Hola{firstName ? `, ${firstName}` : ""} 👋
-        </h1>
-        <p className="mt-2 text-muted">
-          {completed.length === 0
-            ? "Aún no has hecho tu test vocacional. Empieza cuando quieras."
-            : "Aquí está tu actividad. Puedes repetir el test cuando cambien tus intereses."}
-        </p>
-      </header>
-
-      {/* CTA principal */}
+    <>
       <section className="flex flex-col items-start gap-4 rounded-2xl border border-border bg-surface p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
         <div>
           <h2 className="font-display text-xl font-semibold">
@@ -54,7 +74,6 @@ export default async function DashboardPage() {
         </Link>
       </section>
 
-      {/* Historial (RF7) */}
       <section aria-labelledby="historial">
         <h2 id="historial" className="font-display text-xl font-bold tracking-tight">
           Tus evaluaciones
@@ -74,9 +93,7 @@ export default async function DashboardPage() {
                   <div className="flex items-center gap-3">
                     <CodeBadge code={a.holland_code} />
                     <div>
-                      <p className="font-semibold">
-                        Perfil {a.holland_code}
-                      </p>
+                      <p className="font-semibold">Perfil {a.holland_code}</p>
                       <p className="text-sm text-muted">
                         {formatDate(a.completed_at)}
                       </p>
@@ -91,7 +108,7 @@ export default async function DashboardPage() {
           </ul>
         )}
       </section>
-    </div>
+    </>
   );
 }
 

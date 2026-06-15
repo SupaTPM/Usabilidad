@@ -1,49 +1,54 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { HollandHexagon } from "@/components/HollandHexagon";
 import { DimensionBars } from "@/components/DimensionBars";
 import { CareerCard, type CareerData } from "@/components/CareerCard";
 import { ResultActions } from "@/components/ResultActions";
+import {
+  ProfileResultSkeleton,
+  RecommendationsSkeleton,
+} from "@/components/Skeletons";
 import { RIASEC } from "@/lib/vocational/riasec";
 import { rankedDimensions, type Scores } from "@/lib/vocational/matching";
-import type { RiasecDim } from "@/lib/supabase/database.types";
 
 export const metadata = { title: "Tus resultados · Brújula" };
 
+// Shell inmediato; el perfil y las recomendaciones se transmiten por separado.
 export default async function ResultsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const supabase = await createClient();
 
+  return (
+    <div className="space-y-12">
+      <Suspense fallback={<ProfileResultSkeleton />}>
+        <ProfileBlock id={id} />
+      </Suspense>
+      <Suspense fallback={<RecommendationsSkeleton />}>
+        <RecommendationsBlock id={id} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function ProfileBlock({ id }: { id: string }) {
+  const supabase = await createClient();
   const { data: assessment } = await supabase
     .from("assessments")
-    .select("id, scores, holland_code, completed_at")
+    .select("scores, holland_code")
     .eq("id", id)
     .single();
 
   if (!assessment) notFound();
 
-  const { data: recs } = await supabase
-    .from("recommendations")
-    .select(
-      "score, rank, explanation, careers(id, name, description, riasec_code, field, avg_duration_years, academic_demand, job_demand, avg_monthly_cost, job_market_outlook, university_examples, key_skills)"
-    )
-    .eq("assessment_id", id)
-    .order("rank", { ascending: true });
-
   const scores = assessment.scores as Scores;
   const top = rankedDimensions(scores).slice(0, 3);
-  const careerIds = (recs ?? [])
-    .map((r) => (r.careers as unknown as CareerData)?.id)
-    .filter(Boolean);
-  const compareHref = `/comparar?ids=${careerIds.slice(0, 3).join(",")}`;
 
   return (
-    <div className="space-y-12">
-      {/* Encabezado del perfil */}
+    <>
       <header>
         <p className="font-mono text-sm font-semibold text-primary">
           Tu perfil vocacional
@@ -66,8 +71,7 @@ export default async function ResultsPage({
         </p>
       </header>
 
-      {/* Hexágono + barras */}
-      <section className="grid gap-8 rounded-2xl border border-border bg-surface p-6 sm:p-8 lg:grid-cols-2">
+      <section className="mt-8 grid gap-8 rounded-2xl border border-border bg-surface p-6 sm:p-8 lg:grid-cols-2">
         <div className="flex items-center justify-center">
           <HollandHexagon scores={scores} size={340} />
         </div>
@@ -78,11 +82,29 @@ export default async function ResultsPage({
           <DimensionBars scores={scores} />
         </div>
       </section>
+    </>
+  );
+}
 
-      {/* Acciones */}
+async function RecommendationsBlock({ id }: { id: string }) {
+  const supabase = await createClient();
+  const { data: recs } = await supabase
+    .from("recommendations")
+    .select(
+      "score, rank, explanation, careers(id, name, description, riasec_code, field, avg_duration_years, academic_demand, job_demand, avg_monthly_cost, job_market_outlook, university_examples, key_skills)"
+    )
+    .eq("assessment_id", id)
+    .order("rank", { ascending: true });
+
+  const careerIds = (recs ?? [])
+    .map((r) => (r.careers as unknown as CareerData)?.id)
+    .filter(Boolean);
+  const compareHref = `/comparar?ids=${careerIds.slice(0, 3).join(",")}`;
+
+  return (
+    <>
       <ResultActions compareHref={compareHref} />
 
-      {/* Recomendaciones */}
       <section aria-labelledby="recos">
         <h2 id="recos" className="font-display text-2xl font-bold tracking-tight">
           Carreras recomendadas para ti
@@ -105,6 +127,6 @@ export default async function ResultsPage({
           })}
         </div>
       </section>
-    </div>
+    </>
   );
 }

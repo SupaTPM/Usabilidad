@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { cache } from "react";
 import type { Database } from "./database.types";
 
 /**
@@ -30,6 +31,19 @@ export async function createClient() {
     }
   );
 }
+
+/**
+ * Usuario autenticado de la request, validado contra el servidor de Auth.
+ * Envuelto en `cache()` de React: si el layout y la página (y cualquier
+ * componente) lo piden en el mismo render, se hace UNA sola llamada de red.
+ */
+export const getCurrentUser = cache(async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
+});
 
 /**
  * Cliente con service role — SOLO para tareas administrativas en el
