@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ════════════════════════════════════════════════════════════════════
+   Tokens de diseño — Sistema de Orientación Vocacional
+   Firma visual: el hexágono de Holland (RIASEC).
+   Accesibilidad: temas claro/oscuro + alto contraste + texto grande,
+   controlados por atributos data-* en <html> (menú de accesibilidad).
+   ════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: 247 248 252;
+  --surface: 255 255 255;
+  --surface-2: 240 242 250;
+  --border: 224 227 240;
+  --fg: 27 27 58;
+  --muted: 92 96 130;
+  --primary: 58 46 158;
+  --primary-fg: 255 255 255;
+  --accent: 255 107 74;
+  --success: 22 163 110;
+  --warning: 233 168 0;
+  --danger: 220 60 75;
+  --ring: 58 46 158;
+
+  /* Dimensiones RIASEC */
+  --riasec-r: 194 96 63;
+  --riasec-i: 42 157 143;
+  --riasec-a: 181 23 158;
+  --riasec-s: 229 85 110;
+  --riasec-e: 233 168 0;
+  --riasec-c: 62 124 177;
+
+  --radius: 14px;
+  --font-scale: 1;
+}
+
+/* Tema oscuro */
+[data-theme="dark"] {
+  --bg: 16 16 32;
+  --surface: 26 26 48;
+  --surface-2: 34 34 60;
+  --border: 52 52 86;
+  --fg: 236 237 248;
+  --muted: 158 162 192;
+  --primary: 139 130 246;
+  --primary-fg: 16 16 32;
+  --accent: 255 130 100;
+  --ring: 139 130 246;
+}
+
+/* Alto contraste (refuerza bordes y texto) */
+[data-contrast="high"] {
+  --bg: 255 255 255;
+  --surface: 255 255 255;
+  --surface-2: 255 255 255;
+  --border: 0 0 0;
+  --fg: 0 0 0;
+  --muted: 28 28 28;
+  --primary: 22 16 92;
+  --primary-fg: 255 255 255;
+  --ring: 0 0 0;
+}
+[data-theme="dark"][data-contrast="high"] {
+  --bg: 0 0 0;
+  --surface: 0 0 0;
+  --surface-2: 12 12 12;
+  --border: 255 255 255;
+  --fg: 255 255 255;
+  --muted: 224 224 224;
+  --primary: 200 196 255;
+  --primary-fg: 0 0 0;
+  --ring: 255 255 255;
+}
+
+/* Escala de texto (menú accesibilidad → texto grande) */
+[data-text="large"] { --font-scale: 1.15; }
+[data-text="xlarge"] { --font-scale: 1.3; }
+
+html {
+  font-size: calc(100% * var(--font-scale));
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Foco visible siempre (WCAG 2.4.7 / 2.4.11) */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid rgb(var(--ring));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Respeta "reducir movimiento" (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* Enlace para saltar al contenido (WCAG 2.4.1) */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: rgb(var(--primary));
+  color: rgb(var(--primary-fg));
+  border-radius: var(--radius);
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Tipografía de apoyo */
+.font-display { font-family: var(--font-display), system-ui, sans-serif; }
+.font-mono { font-family: var(--font-mono), ui-monospace, monospace; }
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-breathe { animation: breathe 6s ease-in-out infinite; }
+.animate-fade-up { animation: fade-up 0.6s ease both; }
+
+/* Reporte imprimible (RF9): oculta navegación y aplana superficies. */
+@media print {
+  header,
+  .skip-link,
+  .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}
+
