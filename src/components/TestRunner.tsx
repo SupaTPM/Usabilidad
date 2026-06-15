@@ -126,33 +126,38 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
                   </span>
                   {q.text}
                 </legend>
-                <div
-                  role="radiogroup"
-                  aria-label={q.text}
-                  className="mt-4 grid grid-cols-5 gap-1.5 sm:gap-2"
-                >
+                {/* Radios nativos: agrupación y navegación por flechas
+                    accesibles (patrón ARIA), con apariencia de tarjetas. */}
+                <div className="mt-4 grid grid-cols-5 gap-1.5 sm:gap-2">
                   {SCALE.map((s) => {
                     const active = answers[q.id] === s.value;
                     return (
-                      <button
+                      <label
                         key={s.value}
-                        type="button"
-                        role="radio"
-                        aria-checked={active}
-                        onClick={() => setAnswer(q.id, s.value)}
-                        className={`flex flex-col items-center gap-1 rounded-lg border px-1 py-2.5 text-center transition ${
+                        className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg border px-1 py-2.5 text-center transition focus-within:outline focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-ring ${
                           active
                             ? "border-primary bg-primary text-primary-fg"
                             : "border-border bg-surface-2 hover:border-primary"
                         }`}
                       >
+                        <input
+                          type="radio"
+                          name={q.id}
+                          value={s.value}
+                          checked={active}
+                          onChange={() => setAnswer(q.id, s.value)}
+                          className="sr-only"
+                        />
                         <span className="font-mono text-base font-bold">
                           {s.value}
                         </span>
                         <span className="text-[11px] leading-tight">
                           {s.label}
                         </span>
-                      </button>
+                        <span className="sr-only">
+                          {s.value} de 5, {s.label}
+                        </span>
+                      </label>
                     );
                   })}
                 </div>

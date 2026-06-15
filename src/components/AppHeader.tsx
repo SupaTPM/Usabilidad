@@ -10,7 +10,7 @@ const LINKS = [
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-bg">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo href="/dashboard" />
         <nav className="flex items-center gap-1 sm:gap-2" aria-label="Principal">

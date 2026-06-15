@@ -132,6 +132,21 @@ src/
 - **Tasa de finalización / error:** progreso visible, validación por bloque y
   mensajes de error claros y específicos.
 
+#### Verificación automatizada (Playwright + axe-core)
+
+```bash
+npm run test:a11y
+```
+
+Audita 6 estados de pantalla (landing, login, registro, panel, test, resultados)
+contra WCAG 2.0/2.1/2.2 **A y AA**, más pruebas de **teclado y foco** (skip-link,
+foco visible, envío de formularios con Enter, navegación del test con flechas).
+Estado actual: **0 violaciones**. Las pruebas están en `e2e/`.
+
+> Nota honesta: axe cubre de forma fiable ~30–55 % de los criterios WCAG. Pasar
+> sin violaciones es necesario pero no suficiente; para certificar el 95 %
+> conviene además una revisión manual con lector de pantalla (NVDA/VoiceOver).
+
 ---
 
 ## Crear un administrador (RF10)
