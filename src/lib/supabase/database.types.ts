@@ -2,7 +2,7 @@
 // Generados a mano para el MVP; regenera con:  npm run db:types
 // (requiere `supabase start` o un proyecto enlazado).
 
-export type UserRole = "student" | "admin";
+export type UserRole = "student" | "admin" | "orientador";
 export type RiasecDim = "R" | "I" | "A" | "S" | "E" | "C";
 export type AssessmentStatus = "in_progress" | "completed";
 export type DemandLevel = "low" | "medium" | "high";
@@ -123,6 +123,13 @@ export type SavedComparisonRow = {
   created_at: string;
 }
 
+export type StudentAssignmentRow = {
+  id: string;
+  orientador_id: string;
+  student_id: string;
+  assigned_at: string;
+}
+
 // Helper: una tabla con Row, e Insert/Update derivados de la fila.
 type Table<Row, Required extends keyof Row> = {
   Row: Row;
@@ -150,10 +157,12 @@ export interface Database {
       action_plans: Table<ActionPlanRow, "assessment_id" | "user_id">;
       reports: Table<ReportRow, "assessment_id" | "user_id">;
       saved_comparisons: Table<SavedComparisonRow, "user_id">;
+      student_assignments: Table<StudentAssignmentRow, "orientador_id" | "student_id">;
     };
     Views: { [_ in never]: never };
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
+      is_orientador: { Args: Record<string, never>; Returns: boolean };
     };
     Enums: {
       user_role: UserRole;

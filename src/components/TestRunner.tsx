@@ -112,6 +112,7 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
       <ol className="space-y-5">
         {current.map((q, i) => {
           const missing = showMissing && answers[q.id] == null;
+          const errorId = `error-${q.id}`;
           return (
             <li
               key={q.id}
@@ -119,7 +120,7 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
                 missing ? "border-danger" : "border-border"
               }`}
             >
-              <fieldset>
+              <fieldset aria-describedby={missing ? errorId : undefined}>
                 <legend className="text-base font-medium">
                   <span className="mr-2 font-mono text-sm text-muted">
                     {block * BLOCK_SIZE + i + 1}.
@@ -162,8 +163,8 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
                   })}
                 </div>
                 {missing && (
-                  <p className="mt-2 text-sm text-danger">
-                    Elige una opción para continuar.
+                  <p id={errorId} role="alert" className="mt-2 text-sm text-danger">
+                    <span aria-hidden>⚠ </span>Elige una opción para continuar.
                   </p>
                 )}
               </fieldset>
@@ -189,7 +190,9 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
             disabled={submitting}
             className="rounded-lg bg-primary px-6 py-2.5 font-semibold text-primary-fg shadow-sm transition hover:opacity-90 disabled:opacity-60"
           >
-            {submitting ? "Analizando…" : "Ver mis resultados"}
+            <span aria-live="polite" aria-atomic="true">
+              {submitting ? "Analizando…" : "Ver mis resultados"}
+            </span>
           </button>
         ) : (
           <button

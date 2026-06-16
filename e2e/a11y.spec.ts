@@ -57,6 +57,22 @@ test.describe("Accesibilidad WCAG 2.2 A/AA", () => {
     expect(violations).toEqual([]);
   });
 
+  test("Flujo autenticado: onboarding", async ({ page }) => {
+    await login(page);
+    await page.goto("/onboarding");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const violations = await audit(page, "Onboarding");
+    expect(violations).toEqual([]);
+  });
+
+  test("Explorador de carreras", async ({ page }) => {
+    await login(page);
+    await page.goto("/carreras");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    const violations = await audit(page, "Carreras");
+    expect(violations).toEqual([]);
+  });
+
   test("Test vocacional y resultados", async ({ page }) => {
     await login(page);
     await page.goto("/test");

@@ -25,9 +25,15 @@ export function OnboardingForm({
   const [interests, setInterests] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setNameError(null);
+    if (!fullName.trim()) {
+      setNameError("Por favor ingresá tu nombre completo.");
+      return;
+    }
     setLoading(true);
     setError(null);
     const supabase = createClient();
@@ -60,21 +66,32 @@ export function OnboardingForm({
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       {error && (
-        <p role="alert" className="rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">
+        <p id="form-error" role="alert" className="rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}
 
       <div>
         <label htmlFor="name" className="mb-1.5 block text-sm font-medium">
-          ¿Cómo te llamas?
+          ¿Cómo te llamas? <span className="text-danger" aria-hidden>*</span>
         </label>
         <input
           id="name"
+          name="fullName"
+          autoComplete="name"
+          required
+          aria-required="true"
+          aria-invalid={nameError ? "true" : undefined}
+          aria-describedby={nameError ? "name-error" : error ? "form-error" : undefined}
           value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
+          onChange={(e) => { setFullName(e.target.value); setNameError(null); }}
           className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-base outline-none focus:border-primary"
         />
+        {nameError && (
+          <p id="name-error" role="alert" className="mt-1 text-sm text-danger">
+            {nameError}
+          </p>
+        )}
       </div>
 
       <fieldset>
@@ -123,7 +140,9 @@ export function OnboardingForm({
         disabled={loading}
         className="w-full rounded-lg bg-primary px-6 py-3 text-base font-semibold text-primary-fg shadow-sm transition hover:opacity-90 disabled:opacity-60"
       >
-        {loading ? "Guardando…" : "Continuar al test"}
+        <span aria-live="polite" aria-atomic="true">
+          {loading ? "Guardando…" : "Continuar al test"}
+        </span>
       </button>
     </form>
   );

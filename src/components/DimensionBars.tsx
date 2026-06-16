@@ -21,7 +21,14 @@ export function DimensionBars({ scores }: { scores: Scores }) {
               </span>
               <span className="font-mono text-muted">{value}</span>
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-surface-2">
+            <div
+              role="progressbar"
+              aria-valuenow={value}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${m.name}: ${value} de 100`}
+              className="h-2.5 overflow-hidden rounded-full bg-surface-2"
+            >
               <div
                 className="h-full rounded-full"
                 style={{ width: `${value}%`, background: `rgb(var(${m.colorVar}))` }}

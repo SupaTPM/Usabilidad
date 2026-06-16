@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient, getCurrentUser } from "@/lib/supabase/server";
 import { RIASEC } from "@/lib/vocational/riasec";
 import { GreetingSkeleton, AssessmentsSkeleton } from "@/components/Skeletons";
@@ -7,9 +8,20 @@ import type { RiasecDim } from "@/lib/supabase/database.types";
 
 export const metadata = { title: "Mi panel · Brújula" };
 
-// El shell se renderiza al instante; cada bloque transmite (stream) cuando
-// su consulta resuelve, mostrando su propio skeleton mientras tanto.
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const user = await getCurrentUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user!.id)
+    .single();
+
+  // Redirigir a la vista correcta según el rol.
+  if (profile?.role === "admin") redirect("/admin" as never);
+  if (profile?.role === "orientador") redirect("/orientador" as never);
+
   return (
     <div className="space-y-10">
       <Suspense fallback={<GreetingSkeleton />}>

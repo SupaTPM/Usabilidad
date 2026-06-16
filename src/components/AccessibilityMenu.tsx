@@ -77,10 +77,13 @@ const OPTION_GROUPS: {
   },
 ];
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function AccessibilityMenu() {
   const [open, setOpen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULTS);
   const panelRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     try {
@@ -91,10 +94,38 @@ export function AccessibilityMenu() {
     }
   }, []);
 
+  // Mueve el foco al panel al abrir y lo devuelve al trigger al cerrar.
+  useEffect(() => {
+    if (open) {
+      const first = panelRef.current?.querySelector<HTMLElement>(FOCUSABLE);
+      first?.focus();
+    } else {
+      triggerRef.current?.focus();
+    }
+  }, [open]);
+
+  // Escape + focus trap dentro del panel.
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panelRef.current) return;
+      const focusables = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -110,10 +141,12 @@ export function AccessibilityMenu() {
   return (
     <div className="relative">
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-haspopup="dialog"
+        aria-controls="a11y-panel"
         className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-sm transition hover:bg-surface-2"
       >
         <span aria-hidden>♿</span>
@@ -123,8 +156,10 @@ export function AccessibilityMenu() {
       {open && (
         <div
           ref={panelRef}
+          id="a11y-panel"
           role="dialog"
           aria-label="Opciones de accesibilidad"
+          aria-modal="true"
           className="absolute right-0 z-50 mt-2 w-72 rounded-lg border border-border bg-surface p-4 shadow-xl"
         >
           <p className="mb-3 font-display text-base font-semibold">

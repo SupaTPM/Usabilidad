@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "./database.types";
 
 /** Rutas que requieren sesión iniciada. */
-const PROTECTED_PREFIXES = ["/dashboard", "/test", "/resultados", "/plan", "/perfil"];
+const PROTECTED_PREFIXES = ["/dashboard", "/test", "/resultados", "/plan", "/perfil", "/admin", "/orientador"];
 
 /**
  * Refresca la sesión en cada request y redirige a /login las rutas
