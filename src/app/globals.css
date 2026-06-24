@@ -75,10 +75,17 @@
 
 /* Escala de texto (menú accesibilidad → texto grande) */
 [data-text="large"] { --font-scale: 1.15; }
-[data-text="xlarge"] { --font-scale: 1.3; }
+[data-text="xlarge"] { --font-scale: 1.5; }
+[data-text="max"] { --font-scale: 2; }
 
 html {
   font-size: calc(100% * var(--font-scale));
+  color-scheme: light;
+  overflow-wrap: break-word;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 body {
@@ -94,6 +101,74 @@ body {
   outline: 3px solid rgb(var(--ring));
   outline-offset: 2px;
   border-radius: 6px;
+}
+
+/* Opciones avanzadas del menú de accesibilidad (WCAG 2.2 A/AA). */
+[data-spacing="relaxed"] :where(p, li, label, summary, button, a, input, textarea, select) {
+  line-height: 1.75;
+  letter-spacing: 0.025em;
+  word-spacing: 0.08em;
+}
+
+[data-color-help="on"] :where(a) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.2em;
+}
+[data-color-help="on"] :where([aria-current="true"], [aria-selected="true"], [aria-pressed="true"]) {
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+[data-focus="on"] :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 4px solid #ffbf00;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px rgb(var(--bg));
+}
+
+[data-targets="on"] :where(button, a, input, select, textarea, summary) {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+[data-readable="on"] body {
+  font-family: "Atkinson Hyperlegible", "Verdana", "Tahoma", var(--font-sans), system-ui, sans-serif;
+}
+[data-readable="on"] :where(p, li, label, summary, button, a, input, textarea, select) {
+  line-height: 1.7;
+  letter-spacing: 0.015em;
+}
+
+[data-calm="on"] :where(.shadow-sm, .shadow-xl, .shadow-2xl) {
+  box-shadow: none !important;
+}
+[data-calm="on"] :where(.animate-breathe, .animate-fade-up) {
+  animation: none !important;
+}
+[data-calm="on"] .skeleton::after {
+  animation: none !important;
+}
+
+/* Reflujo específico para videos con transcripción al aumentar el texto.
+   Evita que el panel lateral comprima el reproductor y tape/achique subtítulos. */
+[data-text="xlarge"] .transcript-video-layout,
+[data-text="max"] .transcript-video-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+[data-text="xlarge"] .transcript-video-player,
+[data-text="max"] .transcript-video-player {
+  min-height: auto !important;
+}
+
+[data-text="xlarge"] .transcript-video-panel,
+[data-text="max"] .transcript-video-panel {
+  border-left-width: 0 !important;
+  border-top-width: 1px !important;
+}
+
+[data-text="xlarge"] .transcript-video-list,
+[data-text="max"] .transcript-video-list {
+  max-height: min(18rem, 45vh);
 }
 
 /* Respeta "reducir movimiento" (WCAG 2.3.3) */
@@ -188,4 +263,3 @@ body {
     padding: 0 !important;
   }
 }
-

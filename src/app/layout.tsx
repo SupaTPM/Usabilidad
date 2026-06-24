@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
-import { AccessibilityScript } from "@/components/AccessibilityMenu";
+import { AccessibilityScript } from "@/components/AccessibilityScript";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({

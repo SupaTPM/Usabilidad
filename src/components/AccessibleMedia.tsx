@@ -110,7 +110,10 @@ export function AccessibleMedia({
       </figcaption>
 
       {transcript && (
-        <details className="mt-3 rounded-lg border border-border">
+        <details
+          data-a11y-transcript
+          className="mt-3 rounded-lg border border-border"
+        >
           <summary className="cursor-pointer rounded-lg px-4 py-2.5 text-sm font-medium text-primary hover:bg-surface-2 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring">
             Ver transcripción completa
           </summary>

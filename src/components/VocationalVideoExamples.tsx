@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { TranscriptVideo } from "@/components/TranscriptVideo";
 
 const VIDEOS = [
   {
@@ -116,51 +117,37 @@ export function VocationalVideoExamples({
                     : "overflow-hidden rounded-2xl border border-border bg-bg shadow-sm"
                 }
               >
-                <div
-                  className={
-                    expanded
-                      ? "grid gap-0 transition-all duration-500 ease-out lg:grid-cols-[minmax(0,2.35fr)_minmax(320px,0.65fr)]"
-                      : "grid gap-0 transition-all duration-500 ease-out"
-                  }
-                >
-                  <div>
+                {isGallery && expanded ? (
+                  <TranscriptVideo
+                    video={video}
+                    onClose={() => setExpandedId(null)}
+                  />
+                ) : (
+                  <div className="grid gap-0 transition-all duration-500 ease-out">
                     {isGallery ? (
-                      expanded ? (
-                        <div className={isGallery && expanded ? "aspect-video bg-surface-2 lg:min-h-[560px]" : "aspect-video bg-surface-2"}>
-                          <iframe
-                            className="h-full w-full"
-                            src={embedSrc(video.id, true)}
-                            title={`${video.title} — ${video.source}`}
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerPolicy="strict-origin-when-cross-origin"
-                            allowFullScreen
-                          />
-                        </div>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => setExpandedId(video.id)}
-                          className="group relative block aspect-video w-full overflow-hidden bg-surface-2 text-left focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
-                          aria-label={`Abrir ${video.title} con resumen al lado`}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
-                            alt=""
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                          />
-                          <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-black/35" aria-hidden />
-                          <span className="absolute left-5 top-5 max-w-[85%] text-sm font-bold text-white drop-shadow sm:text-base">
-                            {video.title}
-                          </span>
-                          <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-red-600 text-white shadow-xl transition group-hover:scale-110" aria-hidden>
-                            ▶
-                          </span>
-                          <span className="absolute bottom-5 left-5 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
-                            Clic para ver video y resumen
-                          </span>
-                        </button>
-                      )
+                      <button
+                        type="button"
+                        onClick={() => setExpandedId(video.id)}
+                        className="group relative block aspect-video w-full overflow-hidden bg-surface-2 text-left focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+                        aria-label={`Abrir ${video.title} con transcripción sincronizada`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
+                          alt=""
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                        <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-black/35" aria-hidden />
+                        <span className="absolute left-5 top-5 max-w-[85%] text-sm font-bold text-white drop-shadow sm:text-base">
+                          {video.title}
+                        </span>
+                        <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-red-600 text-white shadow-xl transition group-hover:scale-110" aria-hidden>
+                          ▶
+                        </span>
+                        <span className="absolute bottom-5 left-5 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
+                          Clic para ver con transcripción
+                        </span>
+                      </button>
                     ) : (
                       <div className="aspect-video bg-surface-2">
                         <iframe
@@ -199,62 +186,7 @@ export function VocationalVideoExamples({
                       )}
                     </div>
                   </div>
-
-                  {expanded && (
-                    <aside className="border-t border-border bg-bg p-6 animate-fade-up lg:border-l lg:border-t-0 lg:p-8">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-primary">
-                            Resumen y subtítulos
-                          </p>
-                          <h4 className="mt-2 font-display text-2xl font-bold tracking-tight">
-                            Resumen del video
-                          </h4>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setExpandedId(null)}
-                          className="rounded-full border border-border px-3 py-1 text-sm font-semibold text-muted hover:bg-surface-2"
-                        >
-                          Cerrar
-                        </button>
-                      </div>
-
-                      <div className="mt-6 space-y-5 text-sm leading-relaxed text-muted">
-                        <div className="rounded-2xl border border-border bg-surface p-4">
-                          <p className="font-semibold text-fg">Subtítulos en español</p>
-                          <p className="mt-1">
-                            El reproductor solicita los subtítulos en español de YouTube automáticamente.
-                            Si no aparecen, activa el botón <strong className="text-fg">CC</strong> del reproductor y elige Español.
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-border bg-surface p-4">
-                          <p className="font-semibold text-fg">Resumen</p>
-                          <p className="mt-2">{video.text}</p>
-                        </div>
-
-                        <div>
-                          <p className="font-semibold text-fg">Criterios que evidencia</p>
-                          <ul className="mt-2 list-disc space-y-1 pl-5">
-                            {video.wcag.map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <a
-                          href={`https://www.youtube.com/watch?v=${video.id}`}
-                          className="inline-flex font-semibold text-primary underline underline-offset-4"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Abrir video en YouTube
-                        </a>
-                      </div>
-                    </aside>
-                  )}
-                </div>
+                )}
               </article>
             );
           })}
