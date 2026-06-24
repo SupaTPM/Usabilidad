@@ -7,6 +7,7 @@ import { createClient, getCurrentUser } from "@/lib/supabase/server";
 const BASE_LINKS = [
   { href: "/dashboard", label: "Mi panel" },
   { href: "/carreras", label: "Carreras" },
+  { href: "/videos-vocacionales", label: "Videos" },
 ] as const;
 
 export async function AppHeader() {

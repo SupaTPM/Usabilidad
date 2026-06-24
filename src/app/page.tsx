@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/SiteHeader";
 import { HollandHexagon } from "@/components/HollandHexagon";
 import { RIASEC, RIASEC_ORDER } from "@/lib/vocational/riasec";
+import { VocationalVideoExamples } from "@/components/VocationalVideoExamples";
 
 const STEPS = [
   { t: "Regístrate", d: "Cuéntanos quién eres y qué te interesa hoy." },
@@ -135,6 +136,8 @@ export default function HomePage() {
             })}
           </div>
         </section>
+
+        <VocationalVideoExamples />
 
         <footer className="border-t border-border">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-sm text-muted sm:flex-row sm:px-6">
