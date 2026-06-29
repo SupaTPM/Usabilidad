@@ -15,7 +15,8 @@
     "db:push": "supabase db push",
     "db:diff": "supabase db diff",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "test:a11y": "playwright test"
+    "test:a11y": "playwright test",
+    "test:a11y:evidence": "playwright test e2e/evidence-screenshots.spec.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",

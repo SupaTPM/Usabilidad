@@ -11,7 +11,11 @@ const TEST_USER = {
 
 /** Corre axe sobre la página actual y devuelve las violaciones. */
 async function audit(page: Page, label: string) {
-  const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
+  const results = await new AxeBuilder({ page })
+    .withTags(WCAG_TAGS)
+    // YouTube/Vimeo embebidos: el DOM interno del iframe no es controlable por Brújula.
+    .exclude("iframe")
+    .analyze();
   const v = results.violations;
   if (v.length) {
     console.log(`\n── ${label}: ${v.length} tipo(s) de violación ──`);
@@ -41,6 +45,7 @@ test.describe("Accesibilidad WCAG 2.2 A/AA", () => {
     ["/", "Landing"],
     ["/login", "Login"],
     ["/register", "Registro"],
+    ["/ayuda", "Ayuda"],
   ] as const) {
     test(`Página pública: ${label}`, async ({ page }) => {
       await page.goto(path);

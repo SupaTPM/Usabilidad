@@ -4,8 +4,16 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { useShowHints } from "@/lib/accessibility/useShowHints";
 
 type Mode = "login" | "register";
+
+type FieldErrors = {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  form?: string;
+};
 
 export function AuthForm({ mode }: { mode: Mode }) {
   const router = useRouter();
@@ -15,15 +23,37 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const errorId = error ? "auth-error" : undefined;
+
+  function validateClient(): FieldErrors {
+    const errors: FieldErrors = {};
+    if (mode === "register" && !fullName.trim()) {
+      errors.fullName = "Ingresa tu nombre completo.";
+    }
+    if (!email.trim()) errors.email = "Ingresa tu correo electrónico.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errors.email = "El correo no tiene un formato válido.";
+    }
+    if (!password) errors.password = "Ingresa tu contraseña.";
+    else if (mode === "register" && password.length < 6) {
+      errors.password = "La contraseña debe tener al menos 6 caracteres.";
+    }
+    return errors;
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
+    setFieldErrors({});
     setInfo(null);
+
+    const clientErrors = validateClient();
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors);
+      return;
+    }
+
     setLoading(true);
     const supabase = createClient();
 
@@ -35,7 +65,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
           options: { data: { full_name: fullName } },
         });
         if (error) throw error;
-        // Si el proyecto exige confirmación por correo, no hay sesión todavía.
         if (!data.session) {
           setInfo(
             "Revisa tu correo y confirma tu cuenta para continuar. Luego inicia sesión."
@@ -54,24 +83,47 @@ export function AuthForm({ mode }: { mode: Mode }) {
       }
       router.refresh();
     } catch (err) {
-      setError(
+      const message =
         err instanceof Error
           ? traducirError(err.message)
-          : "Algo salió mal. Inténtalo de nuevo."
-      );
+          : "Algo salió mal. Inténtalo de nuevo.";
+      if (/contraseña|correo incorrectos/i.test(message)) {
+        setFieldErrors({ password: message, form: message });
+      } else if (/contraseña debe tener/i.test(message)) {
+        setFieldErrors({ password: message });
+      } else if (/correo ya tiene/i.test(message)) {
+        setFieldErrors({ email: message, form: message });
+      } else if (/correo aún no está confirmado/i.test(message)) {
+        setFieldErrors({ email: message, form: message });
+      } else {
+        setFieldErrors({ form: message });
+      }
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4" noValidate>
-      {error && (
+    <form
+      onSubmit={onSubmit}
+      className="space-y-4"
+      noValidate
+      {...(mode === "register"
+        ? {
+            "data-critical": "",
+            "data-confirm-title": "Crear cuenta",
+            "data-confirm-message":
+              "¿Quieres crear tu cuenta con estos datos? Podrás revisar tu perfil después.",
+            "data-confirm-label": "Crear cuenta",
+          }
+        : {})}
+    >
+      {fieldErrors.form && (
         <p
           id="auth-error"
           role="alert"
           className="rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger"
         >
-          {error}
+          {fieldErrors.form}
         </p>
       )}
       {info && (
@@ -88,10 +140,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
           id="fullName"
           label="Nombre completo"
           value={fullName}
-          onChange={setFullName}
+          onChange={(v) => {
+            setFullName(v);
+            setFieldErrors((prev) => ({ ...prev, fullName: undefined, form: undefined }));
+          }}
           autoComplete="name"
           required
-          formErrorId={errorId}
+          error={fieldErrors.fullName}
         />
       )}
       <Field
@@ -99,21 +154,34 @@ export function AuthForm({ mode }: { mode: Mode }) {
         label="Correo electrónico"
         type="email"
         value={email}
-        onChange={setEmail}
+        onChange={(v) => {
+          setEmail(v);
+          setFieldErrors((prev) => ({ ...prev, email: undefined, form: undefined }));
+        }}
         autoComplete="email"
         required
-        formErrorId={errorId}
+        hint="Usa un correo al que tengas acceso. Lo necesitarás para iniciar sesión."
+        hintExpandable
+        error={fieldErrors.email}
       />
       <Field
         id="password"
         label="Contraseña"
         type="password"
         value={password}
-        onChange={setPassword}
+        onChange={(v) => {
+          setPassword(v);
+          setFieldErrors((prev) => ({ ...prev, password: undefined, form: undefined }));
+        }}
         autoComplete={mode === "register" ? "new-password" : "current-password"}
         required
-        hint={mode === "register" ? "Mínimo 6 caracteres." : undefined}
-        formErrorId={errorId}
+        hint={
+          mode === "register"
+            ? "Mínimo 6 caracteres. Usa una contraseña que recuerdes o deja que tu gestor la genere."
+            : "Puedes pegar la contraseña desde tu gestor de contraseñas."
+        }
+        hintExpandable
+        error={fieldErrors.password}
       />
 
       <button
@@ -160,7 +228,8 @@ function Field({
   autoComplete,
   required,
   hint,
-  formErrorId,
+  hintExpandable,
+  error,
 }: {
   id: string;
   label: string;
@@ -170,10 +239,14 @@ function Field({
   autoComplete?: string;
   required?: boolean;
   hint?: string;
-  formErrorId?: string;
+  hintExpandable?: boolean;
+  error?: string;
 }) {
-  const hintId = hint ? `${id}-hint` : undefined;
-  const describedBy = [hintId, formErrorId].filter(Boolean).join(" ") || undefined;
+  const showHints = useShowHints();
+  const hintId = hint && (showHints || !hintExpandable) ? `${id}-hint` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const describedBy = [hintId, errorId].filter(Boolean).join(" ") || undefined;
+
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
@@ -188,12 +261,23 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         autoComplete={autoComplete}
         required={required}
-        aria-invalid={formErrorId ? "true" : undefined}
+        aria-invalid={error ? "true" : undefined}
         aria-describedby={describedBy}
-        className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-base outline-none focus:border-primary"
+        className={`w-full rounded-lg border bg-surface px-4 py-2.5 text-base outline-none focus:border-primary ${
+          error ? "border-danger" : "border-border"
+        }`}
       />
+      {error && (
+        <p id={errorId} role="alert" className="field-error-visible mt-1 text-sm text-danger">
+          {error}
+        </p>
+      )}
       {hint && (
-        <p id={`${id}-hint`} className="mt-1 text-xs text-muted">
+        <p
+          id={`${id}-hint`}
+          className={`mt-1 text-xs text-muted ${hintExpandable ? "field-hint" : ""}`}
+          aria-hidden={hintExpandable && !showHints ? "true" : undefined}
+        >
           {hint}
         </p>
       )}

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { submitAssessment } from "@/app/(app)/test/actions";
+import { useAccessibilityConfirm } from "@/components/AccessibilityConfirmProvider";
 
 export interface TestQuestion {
   id: string;
@@ -22,6 +23,7 @@ const BLOCK_SIZE = 6;
 
 export function TestRunner({ questions }: { questions: TestQuestion[] }) {
   const router = useRouter();
+  const { runCriticalAction } = useAccessibilityConfirm();
   const blocks = useMemo(() => chunk(questions, BLOCK_SIZE), [questions]);
   const [block, setBlock] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -60,25 +62,41 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
       setShowMissing(true);
       return;
     }
-    setSubmitting(true);
-    setError(null);
-    const payload = Object.entries(answers).map(([questionId, value]) => ({
-      questionId,
-      value,
-    }));
-    const res = await submitAssessment(payload);
-    if (res.ok && res.assessmentId) {
-      router.push(`/resultados/${res.assessmentId}`);
-    } else {
-      setError(res.error ?? "Algo salió mal.");
-      setSubmitting(false);
-    }
+
+    await runCriticalAction(
+      {
+        title: "Enviar test vocacional",
+        message:
+          "¿Quieres enviar tus respuestas y ver tus resultados? Aún podrás consultarlos después desde tu panel.",
+        confirmLabel: "Ver mis resultados",
+        cancelLabel: "Seguir revisando",
+      },
+      async () => {
+        setSubmitting(true);
+        setError(null);
+        const payload = Object.entries(answers).map(([questionId, value]) => ({
+          questionId,
+          value,
+        }));
+        const res = await submitAssessment(payload);
+        if (res.ok && res.assessmentId) {
+          router.push(`/resultados/${res.assessmentId}`);
+        } else {
+          setError(res.error ?? "Algo salió mal.");
+          setSubmitting(false);
+        }
+      }
+    );
   }
 
   return (
     <div>
       {/* Progreso */}
       <div className="mb-8">
+        <p id="test-instructions" className="field-hint mb-4 rounded-xl border border-border bg-surface px-4 py-3 text-sm leading-relaxed text-muted">
+          Elige una opción del 1 al 5 en cada pregunta. Puedes moverte entre bloques con
+          Atrás y Siguiente. Usa las flechas del teclado dentro de cada grupo de respuestas.
+        </p>
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="font-mono font-semibold text-primary">
             Bloque {block + 1} de {blocks.length}
@@ -96,7 +114,7 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
           aria-label="Progreso del test"
         >
           <div
-            className="h-full rounded-full bg-primary transition-all"
+            className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -135,7 +153,7 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
                     return (
                       <label
                         key={s.value}
-                        className={`flex cursor-pointer flex-col items-center gap-1 rounded-lg border px-1 py-2.5 text-center transition focus-within:outline focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-ring ${
+                        className={`a11y-compact-target flex cursor-pointer flex-col items-center gap-1 rounded-lg border px-1 py-2.5 text-center transition focus-within:outline focus-within:outline-[3px] focus-within:outline-offset-2 focus-within:outline-ring ${
                           active
                             ? "border-primary bg-primary text-primary-fg"
                             : "border-border bg-surface-2 hover:border-primary"
@@ -163,7 +181,7 @@ export function TestRunner({ questions }: { questions: TestQuestion[] }) {
                   })}
                 </div>
                 {missing && (
-                  <p id={errorId} role="alert" className="mt-2 text-sm text-danger">
+                  <p id={errorId} role="alert" className="field-error-visible mt-2 text-sm text-danger">
                     <span aria-hidden>⚠ </span>Elige una opción para continuar.
                   </p>
                 )}

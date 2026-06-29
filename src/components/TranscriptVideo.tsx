@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { A11Y_CHANGE_EVENT } from "@/lib/accessibility/apply";
 
 type Cue = { start: number; end: number; text: string };
 
@@ -8,6 +9,9 @@ type YouTubePlayer = {
   getCurrentTime?: () => number;
   seekTo?: (seconds: number, allowSeekAhead: boolean) => void;
   playVideo?: () => void;
+  mute?: () => void;
+  unMute?: () => void;
+  setOption?: (module: string, option: string, value: unknown) => void;
   destroy?: () => void;
 };
 
@@ -126,7 +130,6 @@ export function TranscriptVideo({
           cc_lang_pref: "es",
           hl: "es",
           rel: 0,
-          autoplay: 1,
         },
         events: {
           onReady: () => {
@@ -150,6 +153,26 @@ export function TranscriptVideo({
     };
   }, [video.id]);
 
+  useEffect(() => {
+    function syncPlayerPrefs() {
+      const player = playerRef.current;
+      if (!player) return;
+      const captionsOn = document.documentElement.dataset.captions === "on";
+      const muteOn = document.documentElement.dataset.mute === "on";
+
+      if (muteOn) player.mute?.();
+      else player.unMute?.();
+
+      if (captionsOn) {
+        player.setOption?.("captions", "track", { languageCode: "es" });
+      }
+    }
+
+    syncPlayerPrefs();
+    window.addEventListener(A11Y_CHANGE_EVENT, syncPlayerPrefs);
+    return () => window.removeEventListener(A11Y_CHANGE_EVENT, syncPlayerPrefs);
+  }, [video.id]);
+
   // Auto-scroll de la línea activa.
   useEffect(() => {
     if (activeIdx < 0) return;
@@ -164,7 +187,7 @@ export function TranscriptVideo({
 
     container.scrollTo({
       top: Math.max(0, targetTop),
-      behavior: "smooth",
+      behavior: document.documentElement.dataset.motion === "reduced" ? "auto" : "smooth",
     });
   }, [activeIdx]);
 
@@ -176,18 +199,29 @@ export function TranscriptVideo({
 
   return (
     <div className="transcript-video-layout grid gap-0 transition-all duration-500 ease-out lg:grid-cols-[minmax(0,2.35fr)_minmax(320px,0.65fr)]">
-      <div className="transcript-video-player aspect-video bg-surface-2 lg:min-h-[560px]">
+      <div
+        className="transcript-video-player aspect-video bg-surface-2 lg:min-h-[560px]"
+        role="region"
+        aria-label={`Reproductor de video: ${video.title}`}
+      >
         {/* YT.Player reemplaza este div por el iframe. */}
         <div ref={hostRef} className="h-full w-full" />
       </div>
 
-      <aside className="transcript-video-panel border-t border-border bg-bg p-6 animate-fade-up lg:border-l lg:border-t-0 lg:p-8">
+      <aside
+        className="transcript-video-panel border-t border-border bg-bg p-6 animate-fade-up-slow lg:border-l lg:border-t-0 lg:p-8"
+        data-a11y-transcript-panel
+        aria-labelledby={`transcript-title-${video.id}`}
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-primary">
               Transcripción sincronizada
             </p>
-            <h4 className="mt-2 font-display text-xl font-bold leading-tight tracking-tight">
+            <h4
+              id={`transcript-title-${video.id}`}
+              className="mt-2 font-display text-xl font-bold leading-tight tracking-tight"
+            >
               {video.title}
             </h4>
           </div>
@@ -207,12 +241,18 @@ export function TranscriptVideo({
             subtítulos en español.
           </p>
         ) : (
-          <div
-            ref={transcriptRef}
-            className="transcript-video-list mt-5 max-h-[400px] space-y-1 overflow-y-auto overscroll-contain pr-2"
-            role="list"
-            aria-label="Transcripción del video. Clic en una línea para saltar a ese momento."
-          >
+          <>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Sigue el video leyendo el texto sincronizado. Cada línea salta al momento correspondiente
+              al hacer clic.
+            </p>
+            <div
+              ref={transcriptRef}
+              className="transcript-video-list mt-5 max-h-[400px] space-y-1 overflow-y-auto overscroll-contain pr-2"
+              role="list"
+              data-a11y-transcript
+              aria-label="Transcripción y audiodescripción textual del video. Clic en una línea para saltar a ese momento."
+            >
             {cues.map((cue, i) => (
               <button
                 key={i}
@@ -231,19 +271,14 @@ export function TranscriptVideo({
                 {cue.text}
               </button>
             ))}
-          </div>
+            </div>
+          </>
         )}
 
         <div className="mt-5 border-t border-border pt-4">
-          <p className="text-sm font-semibold text-fg">Criterios que evidencia</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted">
-            {video.wcag.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
           <a
             href={`https://www.youtube.com/watch?v=${video.id}`}
-            className="mt-3 inline-flex text-sm font-semibold text-primary underline underline-offset-4"
+            className="inline-flex text-sm font-semibold text-primary underline underline-offset-4"
             target="_blank"
             rel="noreferrer"
           >

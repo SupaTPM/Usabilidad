@@ -13,6 +13,9 @@ next-env.d.ts
 
 # misc
 .DS_Store
+.venv/
+/test-results/
+/playwright-report/
 *.pem
 .idea
 .vscode

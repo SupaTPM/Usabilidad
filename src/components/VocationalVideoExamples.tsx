@@ -11,7 +11,7 @@ const VIDEOS = [
     source: "Mirador Universitario UNAM",
     tag: "Universidad",
     text: "Explica cómo la orientación vocacional puede ayudar a que el estudiante conecte intereses, habilidades y contexto antes de escoger una carrera universitaria.",
-    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.4.5 Texto no como imagen"],
+    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.3 Audiodescripción", "1.2.5 Audiodescripción grabada"],
   },
   {
     id: "bfp3vN2B5zo",
@@ -19,7 +19,7 @@ const VIDEOS = [
     source: "TEDx Talks",
     tag: "Vocación",
     text: "Presenta la elección de carrera como un proceso de reflexión: conocerse, comparar opciones, escuchar experiencias y decidir con menos presión externa.",
-    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.4.1 Uso del color"],
+    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.3 Audiodescripción", "1.4.1 Uso del color"],
   },
   {
     id: "QvdEulHTKr8",
@@ -27,7 +27,7 @@ const VIDEOS = [
     source: "CuriosaMente",
     tag: "Carreras",
     text: "Resume ideas para identificar intereses personales, probar actividades y cruzar la vocación con oportunidades reales de estudio y trabajo.",
-    wcag: ["1.2.2 Subtítulos grabados", "1.3.1 Estructura clara", "1.4.10 Reajuste de elementos"],
+    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.5 Audiodescripción", "1.4.10 Reajuste de elementos"],
   },
 ];
 
@@ -88,7 +88,7 @@ export function VocationalVideoExamples({
           </p>
           {isSidebar && (
             <Link
-              href="/videos-vocacionales"
+              href={"/videos-vocacionales" as never}
               className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-fg transition hover:opacity-90"
             >
               Ver videos en grande
@@ -135,13 +135,13 @@ export function VocationalVideoExamples({
                         <img
                           src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
                           alt=""
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                          className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.08]"
                         />
                         <span className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-black/35" aria-hidden />
                         <span className="absolute left-5 top-5 max-w-[85%] text-sm font-bold text-white drop-shadow sm:text-base">
                           {video.title}
                         </span>
-                        <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-red-600 text-white shadow-xl transition group-hover:scale-110" aria-hidden>
+                        <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-red-600 text-white shadow-xl transition duration-500 group-hover:scale-125" aria-hidden>
                           ▶
                         </span>
                         <span className="absolute bottom-5 left-5 rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white">
@@ -204,23 +204,20 @@ function VideoDetails({
   shortLabel: boolean;
 }) {
   return (
-    <details className="mt-4 rounded-xl border border-border bg-surface">
+    <details className="mt-4 rounded-xl border border-border bg-surface" data-a11y-transcript>
       <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-primary hover:bg-surface-2">
-        {shortLabel ? "Ver resumen" : "Ver resumen y subtítulos"}
+        {shortLabel ? "Ver resumen" : "Ver resumen, subtítulos y transcripción"}
       </summary>
       <div className="space-y-3 px-4 pb-4 text-sm leading-relaxed text-muted">
         <p>{video.text}</p>
         <p>
-          <strong className="text-fg">Subtítulos:</strong> el video intenta cargar subtítulos en español desde YouTube. Si no aparecen, usa el botón CC del reproductor.
+          El video intenta cargar subtítulos en español desde YouTube. Si no aparecen, usa el botón{" "}
+          <strong className="text-fg">CC</strong> del reproductor.
         </p>
-        <div>
-          <p className="font-semibold text-fg">Criterios que evidencia:</p>
-          <ul className="mt-2 list-disc space-y-1 pl-5">
-            {video.wcag.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </div>
+        <p>
+          En la vista ampliada encontrarás la transcripción sincronizada como alternativa textual
+          al contenido del video.
+        </p>
         <a
           href={`https://www.youtube.com/watch?v=${video.id}`}
           className="inline-flex font-semibold text-primary underline underline-offset-4"

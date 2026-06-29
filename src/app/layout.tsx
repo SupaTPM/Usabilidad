@@ -1,8 +1,21 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Inter, JetBrains_Mono } from "next/font/google";
+import {
+  Atkinson_Hyperlegible,
+  Bricolage_Grotesque,
+  Inter,
+  JetBrains_Mono,
+} from "next/font/google";
 import { AccessibilityScript } from "@/components/AccessibilityScript";
+import { AccessibilityConfirmProvider } from "@/components/AccessibilityConfirmProvider";
+import { AccessibilityRuntime } from "@/components/AccessibilityRuntime";
 import "./globals.css";
 
+const readable = Atkinson_Hyperlegible({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-readable",
+  display: "swap",
+});
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-display",
@@ -33,17 +46,20 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${readable.variable}`}
       suppressHydrationWarning
     >
       <head>
         <AccessibilityScript />
       </head>
       <body className="min-h-dvh">
-        <a href="#contenido" className="skip-link">
-          Saltar al contenido
-        </a>
-        {children}
+        <AccessibilityConfirmProvider>
+          <AccessibilityRuntime />
+          <a href="#contenido" className="skip-link">
+            Saltar al contenido
+          </a>
+          {children}
+        </AccessibilityConfirmProvider>
       </body>
     </html>
   );

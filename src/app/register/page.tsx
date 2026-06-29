@@ -1,18 +1,12 @@
 import { Suspense } from "react";
-import { Logo } from "@/components/Brand";
 import { AuthForm } from "@/components/AuthForm";
+import { AuthPageShell } from "@/components/AuthPageShell";
 
 export const metadata = { title: "Crear cuenta · Brújula" };
 
 export default function RegisterPage() {
   return (
-    <main
-      id="contenido"
-      className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-12"
-    >
-      <div className="mb-8">
-        <Logo />
-      </div>
+    <AuthPageShell>
       <h1 className="font-display text-3xl font-bold tracking-tight">
         Crea tu cuenta
       </h1>
@@ -24,6 +18,6 @@ export default function RegisterPage() {
           <AuthForm mode="register" />
         </Suspense>
       </div>
-    </main>
+    </AuthPageShell>
   );
 }

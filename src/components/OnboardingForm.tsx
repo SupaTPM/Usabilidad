@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useShowHints } from "@/lib/accessibility/useShowHints";
 import type { EducationLevel } from "@/lib/supabase/database.types";
 
 const LEVELS: { value: EducationLevel; label: string }[] = [
@@ -26,6 +27,7 @@ export function OnboardingForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [nameError, setNameError] = useState<string | null>(null);
+  const showHints = useShowHints();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,7 +66,14 @@ export function OnboardingForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-5">
+    <form
+      onSubmit={onSubmit}
+      className="space-y-5"
+      data-critical=""
+      data-confirm-title="Guardar perfil"
+      data-confirm-message="¿Quieres guardar tu perfil y continuar al test vocacional?"
+      data-confirm-label="Guardar y continuar"
+    >
       {error && (
         <p id="form-error" role="alert" className="rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">
           {error}
@@ -82,22 +91,36 @@ export function OnboardingForm({
           required
           aria-required="true"
           aria-invalid={nameError ? "true" : undefined}
-          aria-describedby={nameError ? "name-error" : error ? "form-error" : undefined}
+          aria-describedby={
+            [
+              nameError ? "name-error" : null,
+              error ? "form-error" : null,
+              showHints ? "name-hint" : null,
+            ]
+              .filter(Boolean)
+              .join(" ") || undefined
+          }
           value={fullName}
           onChange={(e) => { setFullName(e.target.value); setNameError(null); }}
           className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-base outline-none focus:border-primary"
         />
         {nameError && (
-          <p id="name-error" role="alert" className="mt-1 text-sm text-danger">
+          <p id="name-error" role="alert" className="field-error-visible mt-1 text-sm text-danger">
             {nameError}
           </p>
         )}
+        <p id="name-hint" className="field-hint text-xs text-muted" aria-hidden={showHints ? undefined : "true"}>
+          Usa tu nombre real o el que prefieras ver en tus resultados.
+        </p>
       </div>
 
-      <fieldset>
+      <fieldset aria-describedby={showHints ? "level-hint" : undefined}>
         <legend className="mb-1.5 block text-sm font-medium">
           ¿En qué nivel educativo estás?
         </legend>
+        <p id="level-hint" className="field-hint mb-2 text-xs text-muted" aria-hidden={showHints ? undefined : "true"}>
+          Elige la opción más cercana a tu situación actual. Puedes cambiarla más adelante.
+        </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {LEVELS.map((l) => {
             const active = level === l.value;
@@ -127,12 +150,18 @@ export function OnboardingForm({
         </label>
         <textarea
           id="interests"
+          name="interests"
+          autoComplete="off"
           value={interests}
           onChange={(e) => setInterests(e.target.value)}
           rows={3}
+          aria-describedby={showHints ? "interests-hint" : undefined}
           placeholder="Ej.: tecnología, ayudar a personas, arte, negocios…"
           className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-base outline-none focus:border-primary"
         />
+        <p id="interests-hint" className="field-hint text-xs text-muted" aria-hidden={showHints ? undefined : "true"}>
+          Opcional. Escribe temas o actividades que te gustaría explorar en una carrera.
+        </p>
       </div>
 
       <button

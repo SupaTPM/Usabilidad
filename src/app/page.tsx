@@ -23,7 +23,7 @@ export default function HomePage() {
         <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-              <span className="h-2 w-2 rounded-full bg-accent" aria-hidden />
+              <span className="h-2 w-2 rounded-full bg-accent animate-soft-pulse" aria-hidden />
               Orientación vocacional para estudiantes
             </span>
             <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -55,8 +55,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
-            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+          <div className="flex justify-center lg:justify-end animate-fade-up-delay-2">
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm hover-lift">
               <HollandHexagon size={360} ambient />
             </div>
           </div>
@@ -70,14 +70,14 @@ export default function HomePage() {
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
             <h2
               id="proceso"
-              className="font-display text-3xl font-bold tracking-tight"
+              className="animate-fade-up font-display text-3xl font-bold tracking-tight"
             >
               Cómo funciona
             </h2>
-            <p className="mt-2 max-w-xl text-muted">
+            <p className="animate-fade-up-delay-1 mt-2 max-w-xl text-muted">
               Siete pasos, de la primera pregunta a tu plan de acción.
             </p>
-            <ol className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            <ol className="animate-stagger mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((s, i) => (
                 <li key={s.t} className="bg-surface p-6">
                   <span className="font-mono text-sm font-bold text-primary">
@@ -100,20 +100,20 @@ export default function HomePage() {
 
         {/* ── Dimensiones RIASEC ─────────────────────────────── */}
         <section aria-labelledby="dimensiones" className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-          <h2 id="dimensiones" className="font-display text-3xl font-bold tracking-tight">
+          <h2 id="dimensiones" className="animate-fade-up font-display text-3xl font-bold tracking-tight">
             Seis maneras de ser
           </h2>
-          <p className="mt-2 max-w-xl text-muted">
+          <p className="animate-fade-up-delay-1 mt-2 max-w-xl text-muted">
             Tu perfil combina estas dimensiones del modelo de Holland. No hay
             respuestas buenas ni malas: solo lo que va contigo.
           </p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="animate-stagger mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {RIASEC_ORDER.map((dim) => {
               const m = RIASEC[dim];
               return (
                 <article
                   key={dim}
-                  className="rounded-xl border border-border bg-surface p-5"
+                  className="hover-lift rounded-xl border border-border bg-surface p-5"
                 >
                   <div className="flex items-center gap-3">
                     <span

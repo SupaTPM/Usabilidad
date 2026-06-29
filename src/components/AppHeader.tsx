@@ -46,7 +46,7 @@ export async function AppHeader() {
               href={l.href as never}
               className="rounded-md px-3 py-2 text-sm font-medium text-muted hover:text-fg"
             >
-              {l.label}
+              {l.label === "Admin" ? <span lang="en">Admin</span> : l.label}
             </Link>
           ))}
           <AccessibilityMenu />
