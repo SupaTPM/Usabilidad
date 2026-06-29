@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ShortcutsReference } from "@/components/ShortcutsReference";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata = { title: "Ayuda y soporte · Brújula" };
@@ -16,7 +17,7 @@ const SECTIONS = [
     title: "Menú de accesibilidad",
     body: [
       "Abre el botón Accesibilidad en la barra superior para ajustar tema (claro, oscuro o sistema), contraste, tamaño de texto, subtítulos, transcripciones, cursor grande, animaciones y opciones cognitivas.",
-      "Atajo de teclado: Alt+Shift+A para abrir o cerrar el menú.",
+      "Atajos principales: Alt+Shift+A (menú), Alt+Shift+? (guía de atajos). Hay más de 25 combinaciones Alt+Shift documentadas abajo.",
       "Tus preferencias se guardan en este dispositivo y se aplican sin recargar la página.",
       "Usa Restablecer preferencias para volver a los valores predeterminados.",
     ],
@@ -69,6 +70,8 @@ export default function AyudaPage() {
             </section>
           ))}
         </div>
+
+        <ShortcutsReference />
 
         <div className="mt-10 rounded-2xl border border-border bg-bg/80 p-5">
           <h2 className="text-sm font-bold text-fg">Contacto</h2>

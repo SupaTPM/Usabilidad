@@ -20,6 +20,12 @@ next-env.d.ts
 .idea
 .vscode
 
+# entregables / materiales del curso (generar o guardar en local)
+/checklist_a_presentar_1prueba.pdf
+/Menu_Accesibilidad_WCAG22-ultimo.docx
+/docs/formularios/*.docx
+/docs/evidencia/*.png
+
 # debug
 npm-debug.log*
 yarn-debug.log*

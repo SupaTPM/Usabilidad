@@ -8,6 +8,7 @@ import {
 import { AccessibilityScript } from "@/components/AccessibilityScript";
 import { AccessibilityConfirmProvider } from "@/components/AccessibilityConfirmProvider";
 import { AccessibilityRuntime } from "@/components/AccessibilityRuntime";
+import { KeyboardShortcutsProvider } from "@/components/KeyboardShortcutsProvider";
 import "./globals.css";
 
 const readable = Atkinson_Hyperlegible({
@@ -55,6 +56,7 @@ export default function RootLayout({
       <body className="min-h-dvh">
         <AccessibilityConfirmProvider>
           <AccessibilityRuntime />
+          <KeyboardShortcutsProvider />
           <a href="#contenido" className="skip-link">
             Saltar al contenido
           </a>

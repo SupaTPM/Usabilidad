@@ -13,7 +13,9 @@ import {
   loadStoredPrefs,
   saveAccessibilityPrefs,
   syncAccessibilityRuntime,
+  A11Y_CHANGE_EVENT,
 } from "@/lib/accessibility/apply";
+import { A11Y_MENU_TOGGLE_EVENT, SHORTCUTS_HELP_TOGGLE_EVENT } from "@/lib/accessibility/shortcuts";
 
 type Prefs = AccessibilityPrefs;
 
@@ -300,14 +302,19 @@ export function AccessibilityMenu() {
   }, []);
 
   useEffect(() => {
-    function onShortcut(e: KeyboardEvent) {
-      if (e.altKey && e.shiftKey && e.key.toLowerCase() === "a") {
-        e.preventDefault();
-        setOpen((v) => !v);
-      }
+    function onToggle() {
+      setOpen((v) => !v);
     }
-    document.addEventListener("keydown", onShortcut);
-    return () => document.removeEventListener("keydown", onShortcut);
+    function onPrefsChange(event: Event) {
+      const detail = (event as CustomEvent).detail;
+      if (detail) setPrefs(detail);
+    }
+    window.addEventListener(A11Y_MENU_TOGGLE_EVENT, onToggle);
+    window.addEventListener(A11Y_CHANGE_EVENT, onPrefsChange);
+    return () => {
+      window.removeEventListener(A11Y_MENU_TOGGLE_EVENT, onToggle);
+      window.removeEventListener(A11Y_CHANGE_EVENT, onPrefsChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -631,9 +638,20 @@ export function AccessibilityMenu() {
             <div id="a11y-ayuda" className="scroll-mt-24 rounded-2xl border border-border bg-bg/80 p-4">
               <h3 className="text-sm font-bold text-fg">Ayuda y atajos</h3>
               <p className="mt-1 text-xs leading-relaxed text-muted">
-                Enlaces útiles y opción para volver a la configuración inicial.
+                Enlaces útiles, atajos de teclado y opción para volver a la configuración inicial.
               </p>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    window.dispatchEvent(new Event(SHORTCUTS_HELP_TOGGLE_EVENT));
+                  }}
+                  className="rounded-xl border border-primary/30 bg-primary/5 px-3 py-2 text-left text-sm font-semibold text-primary transition-colors hover:bg-primary/10 sm:col-span-2"
+                >
+                  Ver todos los atajos
+                  <span className="mt-0.5 block font-mono text-xs font-normal text-muted">Alt+Shift+?</span>
+                </button>
                 <Link
                   href={"/ayuda" as never}
                   onClick={() => setOpen(false)}
@@ -664,7 +682,7 @@ export function AccessibilityMenu() {
                 Restablecer preferencias
               </button>
               <p className="mt-3 text-xs leading-relaxed text-muted">
-                Tus preferencias se guardan solo en este dispositivo. Atajo: Alt+Shift+A.
+                Tus preferencias se guardan solo en este dispositivo. Atajos principales: Alt+Shift+A (menú) y Alt+Shift+? (guía completa).
               </p>
               <p className="sr-only" aria-live="polite">
                 {announcement}

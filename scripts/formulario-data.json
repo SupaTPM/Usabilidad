@@ -1,0 +1,570 @@
+{
+  "sistema": "Brújula — Sistema Inteligente de Orientación Vocacional",
+  "fecha": "2026-06-28",
+  "integrantes": {
+    "jeremy": {
+      "nombre": "Delgado Solorzano Jeremy",
+      "criterios": ["2.4.1"]
+    },
+    "justin": {
+      "nombre": "Zambrano Lucas Justin",
+      "criterios": ["1.1.1"]
+    },
+    "cesar": {
+      "nombre": "Arteaga Molina César (equipo desarrollo)",
+      "criterios": "resto"
+    }
+  },
+  "criterios": [
+    {
+      "id": "1.1.1",
+      "nombre": "Contenido no textual",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Todo contenido no textual informativo dispone de alternativa textual. El hexágono RIASEC usa role=\"img\" con aria-label descriptivo; el logotipo SVG es decorativo (aria-hidden) dentro de un enlace con aria-label \"Brújula, inicio\". Las miniaturas de video están dentro de botones con aria-label que incluye el título del video.",
+      "evidencia": "HollandHexagon.tsx, Brand.tsx, VocationalVideoExamples.tsx",
+      "captura": "landing.png — hexágono RIASEC y marca"
+    },
+    {
+      "id": "1.2.1",
+      "nombre": "Transcripción audio y video",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Mostrar transcripciones",
+      "formulario": "Los videos vocacionales en /videos-vocacionales incluyen transcripción sincronizada (archivos SRT). El menú de accesibilidad detecta transcripciones en la página y permite mostrarlas con un toggle persistente en localStorage.",
+      "evidencia": "public/transcripciones/*.srt, TranscriptVideo.tsx, AccessibilityMenu.tsx",
+      "captura": "videos-vocacionales (transcripción abierta)"
+    },
+    {
+      "id": "1.2.2",
+      "nombre": "Subtítulos grabados",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Activar subtítulos",
+      "formulario": "Videos de YouTube cargan con cc_load_policy=1 e idioma español. Medios HTML nativos usan pistas track kind=\"captions\" vía AccessibleMedia.tsx. El menú activa subtítulos en medios compatibles.",
+      "evidencia": "VocationalVideoExamples.tsx, AccessibleMedia.tsx",
+      "captura": "Video con CC activos"
+    },
+    {
+      "id": "1.2.3",
+      "nombre": "Audiodescripción",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Transcripciones / Subtítulos",
+      "formulario": "Videos con transcripción sincronizada (TranscriptVideo) incluyen bloque explícito de audiodescripción textual cuando YouTube no expone pista AD. El texto sincronizado permite seguir el contenido sin depender solo del audio. Medios HTML nativos soportan pista kind=\"descriptions\" en AccessibleMedia.",
+      "evidencia": "TranscriptVideo.tsx (data-a11y-transcript), AccessibleMedia.tsx",
+      "captura": "Landing → expandir video con transcripción"
+    },
+    {
+      "id": "1.2.4",
+      "nombre": "Subtítulos en directo",
+      "nivel": "AA",
+      "estado": "N/A",
+      "menu": "—",
+      "formulario": "No aplica: el sistema no transmite contenido audiovisual en tiempo real (streaming en vivo). Solo se usan videos pregrabados de YouTube.",
+      "evidencia": "docs/wcag-conformance.md",
+      "captura": "—"
+    },
+    {
+      "id": "1.2.5",
+      "nombre": "Audiodescripción (grabado)",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Transcripciones / Subtítulos",
+      "formulario": "Para video pregrabado, la transcripción sincronizada cumple la función de audiodescripción textual en la misma vista. El menú puede mostrar transcripciones marcadas con data-a11y-transcript. HTML5 admite pista descriptions en AccessibleMedia.",
+      "evidencia": "TranscriptVideo.tsx, VocationalVideoExamples.tsx, AccessibilityMenu.tsx",
+      "captura": "TranscriptVideo con panel de transcripción"
+    },
+    {
+      "id": "1.3.1",
+      "nombre": "Información y relaciones",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "La interfaz usa HTML semántico: main, nav, header, fieldset, legend y encabezados jerárquicos. Las relaciones entre etiquetas y campos se expresan con label/for y aria-describedby.",
+      "evidencia": "layout.tsx, TestRunner.tsx, OnboardingForm.tsx",
+      "captura": "login.png o test con fieldsets"
+    },
+    {
+      "id": "1.3.2",
+      "nombre": "Secuencia significativa",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "El orden del DOM coincide con el orden de lectura: título, instrucciones, campos y acciones. El test vocacional presenta preguntas en bloques secuenciales.",
+      "evidencia": "TestRunner.tsx, páginas App Router",
+      "captura": "landing.png"
+    },
+    {
+      "id": "1.3.3",
+      "nombre": "Características sensoriales",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Señales redundantes",
+      "formulario": "Las instrucciones no piden identificar elementos solo por color, forma o sonido. El test Likert muestra número y texto en cada opción. El toggle de señales redundantes refuerza estados con borde y subrayado.",
+      "evidencia": "TestRunner.tsx, globals.css [data-color-help]",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "1.3.4",
+      "nombre": "Orientación de la pantalla",
+      "nivel": "AA",
+      "estado": "N/A",
+      "menu": "—",
+      "formulario": "No aplica: el diseño es responsive y funciona en vertical y horizontal sin restringir orientación mediante código.",
+      "evidencia": "Tailwind responsive, globals.css",
+      "captura": "—"
+    },
+    {
+      "id": "1.3.5",
+      "nombre": "Identificación propósito campo",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Campos de autenticación usan autocomplete (email, name, current-password, new-password). Onboarding usa autocomplete=\"name\" en el campo de nombre.",
+      "evidencia": "AuthForm.tsx, OnboardingForm.tsx",
+      "captura": "login.png"
+    },
+    {
+      "id": "1.4.1",
+      "nombre": "Uso del color",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Señales redundantes",
+      "formulario": "El color no es el único indicador: errores incluyen texto e icono; enlaces pueden subrayarse; estados seleccionados tienen borde además de color de fondo.",
+      "evidencia": "globals.css, AccessibilityMenu (colorHelp)",
+      "captura": "menu-cognitivo.png con validación visible"
+    },
+    {
+      "id": "1.4.2",
+      "nombre": "Control del audio",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Silenciar medios",
+      "formulario": "No hay reproducción automática al abrir videos (autoplay eliminado). El menú puede silenciar medios HTML globalmente. YouTube usa controles nativos del reproductor.",
+      "evidencia": "TranscriptVideo.tsx, AccessibilityMenu.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "1.4.3",
+      "nombre": "Contraste mínimo (4,5:1)",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Contraste / Tema",
+      "formulario": "Paleta con tokens CSS verificables. Modo alto contraste disponible en el menú. Texto principal y secundario cumplen relación mínima en tema claro y oscuro.",
+      "evidencia": "globals.css, AccessibilityMenu.tsx",
+      "captura": "menu-accesibilidad.png (contraste alto activo)"
+    },
+    {
+      "id": "1.4.4",
+      "nombre": "Cambio tamaño texto (200%)",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Tamaño del texto",
+      "formulario": "El menú escala la fuente raíz hasta 200% (--font-scale: 2) sin ocultar contenido. Layout usa unidades relativas y responsive.",
+      "evidencia": "globals.css [data-text], AccessibilityMenu.tsx",
+      "captura": "Landing con texto al 200%"
+    },
+    {
+      "id": "1.4.5",
+      "nombre": "Imágenes de texto",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "No se usa texto dentro de imágenes para información esencial. Títulos en thumbnails son HTML superpuesto; la información crítica está en texto real.",
+      "evidencia": "VocationalVideoExamples.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "1.4.10",
+      "nombre": "Reajuste de elementos",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Tamaño del texto",
+      "formulario": "Al ampliar texto, el contenido refluye: grids pasan a una columna, videos con transcripción apilan panel bajo reproductor. Sin scroll horizontal forzado.",
+      "evidencia": "globals.css transcript-video-layout",
+      "captura": "ayuda.png"
+    },
+    {
+      "id": "1.4.11",
+      "nombre": "Contraste no textual",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Contraste",
+      "formulario": "Controles del menú y formularios tienen bordes visibles. Estados :focus-visible muestran anillo de foco con contraste suficiente.",
+      "evidencia": "globals.css, AccessibilityMenu.tsx",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "1.4.12",
+      "nombre": "Espaciado de texto",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Espaciado / Lectura clara",
+      "formulario": "Toggle de espaciado amplio aumenta line-height, letter-spacing y word-spacing. Modo lectura clara mejora tipografía y ritmo.",
+      "evidencia": "globals.css [data-spacing], [data-readable]",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "1.4.13",
+      "nombre": "Contenido al pasar cursor o foco",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "No hay contenido esencial solo disponible en hover. El panel del menú es dismissible y no bloquea permanentemente la interacción.",
+      "evidencia": "AccessibilityMenu.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "2.1.1",
+      "nombre": "Teclado",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Toda funcionalidad es operable con teclado: navegación, formularios, test Likert con flechas, menú de accesibilidad completo.",
+      "evidencia": "e2e/keyboard.spec.ts",
+      "captura": "Skip-link con Tab"
+    },
+    {
+      "id": "2.1.2",
+      "nombre": "Sin trampas para foco teclado",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Los focus trap solo existen en diálogos modales (menú, confirmación) con Escape para cerrar y devolución de foco al trigger.",
+      "evidencia": "AccessibilityMenu.tsx, AccessibilityConfirmProvider.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "2.1.4",
+      "nombre": "Atajos del teclado",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Ayuda y atajos",
+      "formulario": "28 atajos globales con Alt+Shift+tecla (nunca un solo carácter). Guía en Alt+Shift+?, panel en src/lib/accessibility/shortcuts.ts, KeyboardShortcutsProvider.tsx y /ayuda.",
+      "evidencia": "shortcuts.ts, KeyboardShortcutsProvider.tsx, ShortcutsReference.tsx, e2e/keyboard-shortcuts.spec.ts",
+      "captura": "Alt+Shift+? en landing"
+    },
+    {
+      "id": "2.2.1",
+      "nombre": "Tiempo ajustable",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "El test vocacional no tiene límite de tiempo. El usuario avanza a su ritmo por bloques.",
+      "evidencia": "TestRunner.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "2.2.2",
+      "nombre": "Pausar, detener, ocultar",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Animaciones / Modo calma",
+      "formulario": "Animaciones pueden reducirse desde el menú o vía prefers-reduced-motion. Modo calma elimina sombras y animaciones decorativas.",
+      "evidencia": "globals.css [data-motion], [data-calm]",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "2.3.1",
+      "nombre": "Umbral de tres destellos",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "No hay contenido que destelle más de tres veces por segundo.",
+      "evidencia": "globals.css animaciones suaves",
+      "captura": "—"
+    },
+    {
+      "id": "2.4.1",
+      "nombre": "Evitar bloques repetitivos",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Saltar al contenido",
+      "formulario": "Enlace \"Saltar al contenido\" visible al recibir foco por teclado. Permite omitir cabecera repetitiva e ir directo a main#contenido en todas las páginas.",
+      "evidencia": "layout.tsx (.skip-link), e2e/keyboard.spec.ts",
+      "captura": "landing.png (Tab en skip-link)"
+    },
+    {
+      "id": "2.4.2",
+      "nombre": "Titulado de páginas",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Cada ruta define metadata.title descriptivo (ej. \"Test vocacional · Brújula\", \"Ayuda y soporte · Brújula\").",
+      "evidencia": "page.tsx metadata en cada ruta",
+      "captura": "Pestaña del navegador"
+    },
+    {
+      "id": "2.4.3",
+      "nombre": "Orden del foco",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "El orden de tabulación sigue el orden visual lógico. Al cerrar el menú, el foco vuelve al botón Accesibilidad.",
+      "evidencia": "AccessibilityMenu.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "2.4.4",
+      "nombre": "Propósito de los enlaces",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Enlaces con texto descriptivo: \"Comenzar mi test\", \"Ayuda y soporte\", \"Videos con transcripción\". No hay enlaces genéricos \"clic aquí\".",
+      "evidencia": "SiteHeader, AppHeader, ayuda/page.tsx",
+      "captura": "ayuda.png"
+    },
+    {
+      "id": "2.4.5",
+      "nombre": "Múltiples vías de navegación",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Ayuda / Soporte",
+      "formulario": "Nav principal, panel de usuario, skip-link, página /ayuda y enlaces contextuales ofrecen más de una forma de orientarse.",
+      "evidencia": "AppHeader.tsx, ayuda/page.tsx",
+      "captura": "landing.png"
+    },
+    {
+      "id": "2.4.6",
+      "nombre": "Encabezados y etiquetas",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Instrucciones expandidas",
+      "formulario": "Campos con label visible; grupos con legend; hints asociados via aria-describedby. Toggle del menú muestra instrucciones adicionales.",
+      "evidencia": "AuthForm, OnboardingForm, TestRunner",
+      "captura": "login.png"
+    },
+    {
+      "id": "2.4.7",
+      "nombre": "Foco visible",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Foco reforzado",
+      "formulario": "Outline visible en :focus-visible globalmente. Toggle opcional de anillo amarillo reforzado para mayor visibilidad.",
+      "evidencia": "globals.css, e2e/keyboard.spec.ts",
+      "captura": "Tab en skip-link"
+    },
+    {
+      "id": "2.4.11",
+      "nombre": "Foco no oculto (mínimo)",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Foco reforzado",
+      "formulario": "Panel del menú en móvil se ancla abajo para no cubrir el área de foco principal. Diálogos no ocultan el foco sin posibilidad de cerrar.",
+      "evidencia": "AccessibilityMenu.tsx (bottom-4 mobile)",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "2.5.1",
+      "nombre": "Gestos del puntero",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "No se requieren gestos multipunto (pellizco, multifinger). Toda interacción funciona con clic o toque simple.",
+      "evidencia": "UI sin gestos complejos",
+      "captura": "—"
+    },
+    {
+      "id": "2.5.2",
+      "nombre": "Cancelación del puntero",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Las acciones se activan en click/submit, no en pointerdown, permitiendo cancelar moviendo el puntero fuera antes de soltar.",
+      "evidencia": "Botones estándar, AccessibilityMenu",
+      "captura": "—"
+    },
+    {
+      "id": "2.5.3",
+      "nombre": "Etiqueta de nombre",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "El texto visible de botones coincide con su nombre accesible (ej. botón \"Accesibilidad\", \"Entrar\", \"Siguiente\").",
+      "evidencia": "Componentes UI",
+      "captura": "—"
+    },
+    {
+      "id": "2.5.4",
+      "nombre": "Actuación por movimiento",
+      "nivel": "A",
+      "estado": "N/A",
+      "menu": "—",
+      "formulario": "No aplica: ninguna función se activa agitando o inclinando el dispositivo.",
+      "evidencia": "docs/wcag-conformance.md",
+      "captura": "—"
+    },
+    {
+      "id": "2.5.7",
+      "nombre": "Movimiento de arrastre",
+      "nivel": "AA",
+      "estado": "N/A",
+      "menu": "—",
+      "formulario": "No aplica: no hay interacciones drag and drop.",
+      "evidencia": "docs/wcag-conformance.md",
+      "captura": "—"
+    },
+    {
+      "id": "2.5.8",
+      "nombre": "Tamaño área interacción (24px)",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Controles grandes",
+      "formulario": "Controles clave usan min-height 44px (superior al mínimo 24px). Toggle del menú amplía áreas táctiles globalmente.",
+      "evidencia": "globals.css [data-targets], AccessibilityMenu",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "3.1.1",
+      "nombre": "Idioma de la página",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Elemento html con lang=\"es\" en el layout raíz.",
+      "evidencia": "layout.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "3.1.2",
+      "nombre": "Idioma de las partes",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Términos en inglés (Admin) marcados con lang=\"en\" donde aparecen en la interfaz en español.",
+      "evidencia": "AppHeader.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "3.2.1",
+      "nombre": "Al recibir el foco",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Modo calma",
+      "formulario": "Recibir foco no cambia contexto ni navega automáticamente. Los toggles del menú requieren activación explícita.",
+      "evidencia": "AccessibilityMenu.tsx",
+      "captura": "—"
+    },
+    {
+      "id": "3.2.2",
+      "nombre": "Al recibir entrada",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Escribir en campos no envía formularios ni cambia de página. Las acciones requieren clic en botón o Enter explícito.",
+      "evidencia": "AuthForm, OnboardingForm, TestRunner",
+      "captura": "—"
+    },
+    {
+      "id": "3.2.3",
+      "nombre": "Navegación coherente",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "AppHeader y SiteHeader mantienen la misma estructura de navegación en todas las páginas autenticadas y públicas.",
+      "evidencia": "AppHeader.tsx, SiteHeader.tsx",
+      "captura": "landing.png, login.png"
+    },
+    {
+      "id": "3.2.4",
+      "nombre": "Identificación consistente",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Componentes repetidos (menú Accesibilidad, botones primarios, enlaces de nav) se identifican y comportan igual en todo el sitio.",
+      "evidencia": "AccessibilityMenu en ambos headers",
+      "captura": "—"
+    },
+    {
+      "id": "3.2.6",
+      "nombre": "Ayuda consistente",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Ayuda / Soporte",
+      "formulario": "Enlace fijo \"Ayuda y soporte\" siempre en la misma sección del menú de accesibilidad, apuntando a /ayuda.",
+      "evidencia": "AccessibilityMenu.tsx, ayuda/page.tsx",
+      "captura": "menu-accesibilidad.png, ayuda.png"
+    },
+    {
+      "id": "3.3.1",
+      "nombre": "Identificación de errores",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Validación visible",
+      "formulario": "Errores con role=\"alert\", aria-invalid en campos y mensajes textuales. Toggle del menú refuerza visualmente campos con error (borde + sombra).",
+      "evidencia": "AuthForm, OnboardingForm, TestRunner, globals.css",
+      "captura": "Formulario con error + validación visible"
+    },
+    {
+      "id": "3.3.2",
+      "nombre": "Etiquetas e instrucciones",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Instrucciones expandidas",
+      "formulario": "Labels, legends y hints con aria-describedby. Toggle del menú muestra ayudas .field-hint adicionales en formularios.",
+      "evidencia": "OnboardingForm, TestRunner, globals.css",
+      "captura": "menu-cognitivo.png"
+    },
+    {
+      "id": "3.3.3",
+      "nombre": "Sugerencias antes de errores",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Instrucciones expandidas",
+      "formulario": "Hints proactivos antes de validar: contraseña (longitud y gestores), instrucciones del test, ayudas de onboarding. Visibles al activar instrucciones expandidas.",
+      "evidencia": "AuthForm.tsx, TestRunner.tsx",
+      "captura": "login.png con hints activos"
+    },
+    {
+      "id": "3.3.4",
+      "nombre": "Prevención de errores",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Confirmar envíos",
+      "formulario": "Toggle opt-in añade diálogo de revisión antes de registro, guardado de perfil y envío del test. Usuario puede cancelar.",
+      "evidencia": "AccessibilityConfirmProvider.tsx, data-critical forms",
+      "captura": "Diálogo confirmación"
+    },
+    {
+      "id": "3.3.7",
+      "nombre": "Entrada redundante",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "Datos guardados",
+      "formulario": "El sistema no vuelve a pedir correo ni contraseña en pasos posteriores. El menú informa el estado de sesión y datos ya guardados.",
+      "evidencia": "AccessibilityMenu.tsx (sessionHint)",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "3.3.8",
+      "nombre": "Autenticación accesible",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "Nota informativa",
+      "formulario": "Sin CAPTCHA ni acertijos. Pegado de contraseña permitido. Gestores de contraseñas compatibles (autocomplete). Texto explicativo en menú cognitivo.",
+      "evidencia": "AuthForm.tsx, AccessibilityMenu.tsx",
+      "captura": "login.png"
+    },
+    {
+      "id": "4.1.2",
+      "nombre": "Nombre, función, valor",
+      "nivel": "A",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Controles personalizados con ARIA: aria-pressed en toggles, aria-expanded en menú, role=dialog, progressbar con aria-valuenow.",
+      "evidencia": "AccessibilityMenu, TestRunner",
+      "captura": "menu-accesibilidad.png"
+    },
+    {
+      "id": "4.1.3",
+      "nombre": "Mensaje de estado",
+      "nivel": "AA",
+      "estado": "Cumple",
+      "menu": "—",
+      "formulario": "Cambios de estado anunciados con aria-live y role=status/alert: progreso del test, carga de formularios, errores, preferencias guardadas.",
+      "evidencia": "TestRunner, AuthForm, AccessibilityMenu",
+      "captura": "—"
+    }
+  ]
+}

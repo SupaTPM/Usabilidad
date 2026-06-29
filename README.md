@@ -24,9 +24,14 @@ catálogo de carreras, justificando cada sugerencia.
 
 ### 1. Instalar dependencias
 
+Usa **uno** de los dos (no mezcles installs en el mismo día si puedes evitarlo):
+
 ```bash
-npm install
+bun install
+# o: npm install
 ```
+
+Los scripts de `package.json` funcionan con **`bun run`** o **`npm run`** — es lo mismo.
 
 ### 2. Variables de entorno
 
@@ -67,7 +72,8 @@ falta correr nada manual.
 ### 4. Arrancar la app
 
 ```bash
-npm run dev          # http://localhost:3000
+bun run dev          # http://localhost:3000
+# o: npm run dev
 ```
 
 ---
@@ -169,6 +175,9 @@ update public.profiles set role = 'admin' where email = 'tu-correo@ejemplo.com';
 | `npm run db:reset` | Reaplica migraciones + seed (local)             |
 | `npm run db:push`  | Aplica migraciones a la nube                    |
 | `npm run db:types` | Regenera `database.types.ts` desde la BD        |
+| `npm run test:a11y`| Auditoría WCAG con Playwright + axe-core        |
+| `npm run test:a11y:evidence` | Capturas en `docs/evidencia/`         |
+| `npm run formularios` | Genera Word del checklist (55 criterios)     |
 
 > **Nota:** los tipos en `src/lib/supabase/database.types.ts` están escritos a
 > mano para el MVP. Una vez tengas la BD en marcha, regenéralos con
