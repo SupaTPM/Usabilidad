@@ -13,6 +13,8 @@
   --surface: 255 255 255;
   --surface-2: 240 242 250;
   --border: 224 227 240;
+  /* Borde de controles con contraste ≥3:1 sobre superficie (WCAG 1.4.11). */
+  --border-strong: 116 120 148;
   --fg: 27 27 58;
   --muted: 79 83 112;
   --primary: 58 46 158;
@@ -41,6 +43,7 @@
   --surface: 26 26 48;
   --surface-2: 34 34 60;
   --border: 52 52 86;
+  --border-strong: 132 136 168;
   --fg: 236 237 248;
   --muted: 158 162 192;
   --primary: 139 130 246;
@@ -55,6 +58,7 @@
     --surface: 26 26 48;
     --surface-2: 34 34 60;
     --border: 52 52 86;
+    --border-strong: 132 136 168;
     --fg: 236 237 248;
     --muted: 158 162 192;
     --primary: 139 130 246;
@@ -70,6 +74,7 @@
   --surface: 255 255 255;
   --surface-2: 255 255 255;
   --border: 0 0 0;
+  --border-strong: 0 0 0;
   --fg: 0 0 0;
   --muted: 28 28 28;
   --primary: 22 16 92;
@@ -81,6 +86,7 @@
   --surface: 0 0 0;
   --surface-2: 12 12 12;
   --border: 255 255 255;
+  --border-strong: 255 255 255;
   --fg: 255 255 255;
   --muted: 224 224 224;
   --primary: 200 196 255;
@@ -148,6 +154,22 @@ body {
   line-height: 1.75;
   letter-spacing: 0.025em;
   word-spacing: 0.08em;
+}
+
+/* Contraste no textual de controles de formulario ≥3:1 (WCAG 1.4.11).
+   El selector supera en especificidad a la utilidad `.border-border`. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea:not([readonly]),
+select:not([disabled]) {
+  border-color: rgb(var(--border-strong));
+}
+
+/* Interlineado tipo procesador de texto: 1.5 / doble (WCAG 1.4.12). */
+[data-line-spacing="wide"] :where(p, li, dd, label, summary, blockquote, figcaption) {
+  line-height: 1.5;
+}
+[data-line-spacing="double"] :where(p, li, dd, label, summary, blockquote, figcaption) {
+  line-height: 2;
 }
 
 [data-color-help="on"] :where(a) {
@@ -238,7 +260,7 @@ body {
 [data-calm="on"] :where(.shadow-sm, .shadow-xl, .shadow-2xl) {
   box-shadow: none !important;
 }
-[data-calm="on"] :where(.animate-breathe, .animate-fade-up, .animate-fade-up-slow, .animate-fade-in, .animate-soft-pulse) {
+[data-calm="on"] :where(.animate-breathe, .animate-fade-up, .animate-fade-up-slow, .animate-fade-in, .animate-soft-pulse, .animate-marquee) {
   animation: none !important;
 }
 [data-calm="on"] .animate-stagger > * {
@@ -367,6 +389,13 @@ body {
   0%, 100% { box-shadow: 0 0 0 0 rgb(var(--primary) / 0); }
   50% { box-shadow: 0 0 0 10px rgb(var(--primary) / 0.12); }
 }
+/* Cinta de texto en movimiento automático — demostración de WCAG 2.2.2
+   (contenido que se mueve solo y que "Calma" / animaciones reducidas detiene). */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 20s linear infinite; }
 
 .animate-breathe { animation: breathe 4s ease-in-out infinite; }
 .animate-fade-up { animation: fade-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) both; }

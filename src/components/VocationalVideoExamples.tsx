@@ -6,28 +6,24 @@ import { TranscriptVideo } from "@/components/TranscriptVideo";
 
 const VIDEOS = [
   {
-    id: "AfB_7F5773Y",
-    title: "La orientación vocacional y sus efectos en las universidades",
-    source: "Mirador Universitario UNAM",
-    tag: "Universidad",
-    text: "Explica cómo la orientación vocacional puede ayudar a que el estudiante conecte intereses, habilidades y contexto antes de escoger una carrera universitaria.",
-    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.3 Audiodescripción", "1.2.5 Audiodescripción grabada"],
-  },
-  {
-    id: "bfp3vN2B5zo",
-    title: "Aprender a elegir qué carrera estudiar",
-    source: "TEDx Talks",
-    tag: "Vocación",
-    text: "Presenta la elección de carrera como un proceso de reflexión: conocerse, comparar opciones, escuchar experiencias y decidir con menos presión externa.",
-    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.3 Audiodescripción", "1.4.1 Uso del color"],
-  },
-  {
-    id: "QvdEulHTKr8",
-    title: "Cómo elegir una carrera que te apasione",
-    source: "CuriosaMente",
-    tag: "Carreras",
-    text: "Resume ideas para identificar intereses personales, probar actividades y cruzar la vocación con oportunidades reales de estudio y trabajo.",
+    id: "S7nO_Cg50Hc",
+    title: "Autoconocimiento y evitar errores",
+    source: "Brújula Vocacional",
+    tag: "Autoconocimiento",
+    text: "Explica cómo un test vocacional analiza habilidades, intereses y aptitudes de forma objetiva para conocerte mejor y evitar años y cambios de carrera costosos.",
+    audiodesc:
+      "Un presentador habla directamente a la cámara mientras narra el contenido. Sobre la imagen aparecen rótulos de texto que repiten las ideas clave (brújula, habilidades, decisiones informadas). No hay información visual adicional a la que se escucha en la narración.",
     wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.5 Audiodescripción", "1.4.10 Reajuste de elementos"],
+  },
+  {
+    id: "Z-yVsLQyulE",
+    title: "Oportunidades profesionales y satisfacción",
+    source: "Brújula Vocacional",
+    tag: "Oportunidades",
+    text: "Muestra cómo el test vocacional conecta tus pasiones con profesiones de demanda laboral real, para construir una carrera productiva y satisfactoria.",
+    audiodesc:
+      "Un presentador habla directamente a la cámara mientras narra el contenido. Sobre la imagen aparecen rótulos de texto que refuerzan cada idea (pasiones, demanda laboral, carrera con propósito). No hay información visual adicional a la que se escucha en la narración.",
+    wcag: ["1.2.2 Subtítulos grabados", "1.2.1 Alternativa textual", "1.2.5 Audiodescripción", "1.4.1 Uso del color"],
   },
 ];
 

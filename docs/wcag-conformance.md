@@ -10,7 +10,7 @@
 
 | Categoría | Preferencias | Criterios |
 |-----------|--------------|-----------|
-| Visual | tema, contraste, texto, espaciado, señales redundantes | 1.4.1, 1.4.3, 1.4.4, 1.4.10–1.4.12 |
+| Visual | tema, contraste, texto, espaciado, **interlineado (1.5 / doble)**, señales redundantes | 1.4.1, 1.4.3, 1.4.4, 1.4.10–1.4.12 |
 | Auditiva | transcripciones, subtítulos, silencio | 1.2.1, 1.2.2, 1.2.5, 1.4.2 |
 | Motriz | foco reforzado, controles grandes | 2.1.1, 2.1.2, 2.4.7, 2.4.11, 2.5.8 |
 | Cognitiva | animaciones, lectura clara, calma, instrucciones, validación, confirmación | 2.2.2, 3.2.1, 3.3.1–3.3.4, 3.3.7–3.3.8 |
@@ -40,7 +40,7 @@ Estos criterios no aplican porque el sistema no posee el tipo de contenido que r
 |-----------|--------|
 | Alternativas textuales y multimedia (1.1.x, 1.2.x) | ✅ Implementado (SVG con role/aria-label; infra `AccessibleMedia` lista para video) |
 | Adaptable / Estructura semántica (1.3.x) | ✅ Completo |
-| Distinguible / Color y contraste (1.4.x) | ✅ Verificado en 4 modos de tema |
+| Distinguible / Color y contraste (1.4.x) | ✅ Verificado en 4 modos de tema. Bordes de controles con token `--border-strong` ≥3:1 (1.4.11); interlineado 1.5/doble tipo Word (1.4.12); reflow sin scroll horizontal a 320px (1.4.10) |
 | Teclado y foco (2.1.x, 2.4.x) | ✅ Completo (focus trap en dialog, foco devuelto al trigger) |
 | Tiempo y movimiento (2.2.x, 2.3.x) | ✅ Completo |
 | Puntero y táctil (2.5.x) | ✅ Completo |
@@ -53,7 +53,12 @@ Estos criterios no aplican porque el sistema no posee el tipo de contenido que r
 
 ## Notas sobre multimedia (1.2.x)
 
-El sistema incluye videos vocacionales con transcripción sincronizada en `/videos-vocacionales`. Para medios HTML nativos:
+### Videos vocacionales (YouTube en `/videos-vocacionales`)
+
+- **1.2.1 / 1.2.2 (Transcripción y subtítulos grabados):** cada video sirve un archivo `.srt` revisado y corregido en `public/transcripciones/{videoId}.srt`, mostrado como transcripción sincronizada clic-para-saltar. Esa misma pista es la fuente de subtítulos: se recomienda subirla en YouTube Studio para reemplazar los subtítulos auto-generados del reproductor.
+- **1.2.5 (Audiodescripción grabada):** los videos son narración de un presentador a cámara con rótulos de texto que repiten lo dicho. No existe información visual ajena al audio, por lo que WCAG no exige pista de audiodescripción separada. Aun así se provee **audiodescripción textual** por video (campo `audiodesc`, panel "Audiodescripción (1.2.5)").
+
+### Para medios HTML nativos:
 
 - Usar el componente `src/components/AccessibleMedia.tsx` que provee:
   - `<track kind="captions">` para subtítulos grabados (1.2.2)
@@ -70,6 +75,8 @@ El sistema incluye videos vocacionales con transcripción sincronizada en `/vide
 Matriz completa para llenar el FORMULARIO del grupo: [`checklist-55-formulario.md`](./checklist-55-formulario.md)
 
 Capturas de evidencia (generar con `npm run test:a11y:evidence`): `docs/evidencia/`
+
+Verificación automatizada de los criterios observados en la auditoría manual (X): `e2e/wcag-x-audit.spec.ts` — cubre 1.2.1/1.2.2/1.2.5, 1.3.4, 1.4.10, 1.4.11, 1.4.12 y 2.2.2. Correr con `npm run test:a11y`.
 
 Documentos Word para entrega (generar con `npm run formularios`):
 

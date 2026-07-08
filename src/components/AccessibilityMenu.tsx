@@ -19,7 +19,7 @@ import { A11Y_MENU_TOGGLE_EVENT, SHORTCUTS_HELP_TOGGLE_EVENT } from "@/lib/acces
 
 type Prefs = AccessibilityPrefs;
 
-type SegmentedKey = "theme" | "contrast" | "text" | "spacing" | "motion";
+type SegmentedKey = "theme" | "contrast" | "text" | "spacing" | "lineSpacing" | "motion";
 type ToggleKey =
   | "colorHelp"
   | "softColors"
@@ -156,6 +156,16 @@ const VISUAL_CONTROLS: {
     options: [
       { value: "normal", label: "Normal" },
       { value: "relaxed", label: "Amplio" },
+    ],
+  },
+  {
+    key: "lineSpacing",
+    label: "Interlineado",
+    hint: "Separación entre líneas del texto, como en un procesador de texto (1.5 o doble).",
+    options: [
+      { value: "normal", label: "Normal" },
+      { value: "wide", label: "1.5" },
+      { value: "double", label: "Doble" },
     ],
   },
 ];

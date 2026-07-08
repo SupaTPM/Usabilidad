@@ -48,7 +48,7 @@ export function HollandHexagon({
       viewBox={`0 0 ${size} ${size}`}
       width={size}
       height={size}
-      className={className}
+      className={`h-auto max-w-full ${className ?? ""}`}
       role="img"
       aria-label={
         scores

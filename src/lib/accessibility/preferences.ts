@@ -5,6 +5,7 @@ export type AccessibilityPrefs = {
   contrast: "normal" | "high";
   text: "normal" | "large" | "xlarge" | "max";
   spacing: "normal" | "relaxed";
+  lineSpacing: "normal" | "wide" | "double";
   colorHelp: Binary;
   softColors: Binary;
   boldText: Binary;
@@ -30,6 +31,7 @@ export const DEFAULT_ACCESSIBILITY_PREFS: AccessibilityPrefs = {
   contrast: "normal",
   text: "normal",
   spacing: "normal",
+  lineSpacing: "normal",
   colorHelp: "off",
   softColors: "off",
   boldText: "off",

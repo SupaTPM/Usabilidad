@@ -35,6 +35,7 @@ interface VideoData {
   id: string;
   title: string;
   source: string;
+  audiodesc?: string;
   wcag: string[];
 }
 
@@ -210,7 +211,6 @@ export function TranscriptVideo({
 
       <aside
         className="transcript-video-panel border-t border-border bg-bg p-6 animate-fade-up-slow lg:border-l lg:border-t-0 lg:p-8"
-        data-a11y-transcript-panel
         aria-labelledby={`transcript-title-${video.id}`}
       >
         <div className="flex items-start justify-between gap-4">
@@ -233,6 +233,17 @@ export function TranscriptVideo({
             Cerrar
           </button>
         </div>
+
+        {video.audiodesc && (
+          <details className="mt-4 rounded-xl border border-border bg-surface">
+            <summary className="cursor-pointer px-3 py-2 text-sm font-semibold text-primary hover:bg-surface-2">
+              Audiodescripción (1.2.5)
+            </summary>
+            <p className="px-3 pb-3 text-sm leading-relaxed text-muted">
+              {video.audiodesc}
+            </p>
+          </details>
+        )}
 
         {error ? (
           <p className="mt-6 text-sm text-muted">

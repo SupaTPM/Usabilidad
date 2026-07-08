@@ -21,7 +21,7 @@ export default function HomePage() {
       <main id="contenido">
         {/* ── Hero ───────────────────────────────────────────── */}
         <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
-          <div className="animate-fade-up">
+          <div className="min-w-0 animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
               <span className="h-2 w-2 rounded-full bg-accent animate-soft-pulse" aria-hidden />
               Orientación vocacional para estudiantes
@@ -55,12 +55,44 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="flex justify-center lg:justify-end animate-fade-up-delay-2">
-            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm hover-lift">
+          <div className="min-w-0 flex justify-center lg:justify-end animate-fade-up-delay-2">
+            <div className="min-w-0 rounded-2xl border border-border bg-surface p-6 shadow-sm hover-lift">
               <HollandHexagon size={360} ambient />
             </div>
           </div>
         </section>
+
+        {/* ── Cinta en movimiento (demostración WCAG 2.2.2) ──── */}
+        <div
+          className="overflow-hidden border-y border-border bg-surface"
+          aria-hidden="true"
+        >
+          <div className="animate-marquee flex w-max gap-10 whitespace-nowrap py-3 text-sm font-semibold uppercase tracking-[0.14em] text-muted">
+            {Array.from({ length: 2 }).map((_, copy) => (
+              <span key={copy} className="flex gap-10">
+                {[
+                  "Ingeniería",
+                  "Medicina",
+                  "Diseño",
+                  "Derecho",
+                  "Psicología",
+                  "Docencia",
+                  "Datos",
+                  "Arquitectura",
+                  "Comunicación",
+                  "Negocios",
+                ].map((w) => (
+                  <span key={w} className="flex items-center gap-10">
+                    <span>{w}</span>
+                    <span className="text-primary" aria-hidden>
+                      ✦
+                    </span>
+                  </span>
+                ))}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {/* ── Proceso (secuencia real → numerada) ────────────── */}
         <section

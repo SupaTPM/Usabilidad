@@ -22,7 +22,10 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
+    // distDir aislado (.next-test) para no compartir `.next` con el dev del 3000
+    // y evitar la corrupción de caché por dos Next dev simultáneos.
     command: `${PM} run dev -- -p ${TEST_PORT}`,
+    env: { NEXT_DIST_DIR: ".next-test" },
     url: BASE,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

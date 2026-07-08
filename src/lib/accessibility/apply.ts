@@ -43,6 +43,7 @@ export function applyAccessibilityPrefs(prefs: AccessibilityPrefs) {
   el.dataset.contrast = prefs.contrast;
   el.dataset.text = prefs.text;
   el.dataset.spacing = prefs.spacing;
+  el.dataset.lineSpacing = prefs.lineSpacing;
   el.dataset.colorHelp = prefs.colorHelp;
   el.dataset.softColors = prefs.softColors;
   el.dataset.boldText = prefs.boldText;
