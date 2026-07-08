@@ -94,6 +94,37 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* ── Banner: texto REAL sobre un gráfico decorativo ───
+            Demostración WCAG 1.4.5: el fondo es un gráfico (gradiente + patrón,
+            sin texto) y el título/párrafo son texto HTML real — se agranda,
+            lo lee el lector de pantalla, se traduce y se adapta al contraste. */}
+        <section aria-labelledby="banner-1-4-5" className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-primary">
+            {/* Gráfico decorativo de fondo (NO contiene texto). */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-25"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 20% 20%, rgb(255 255 255 / 0.9), transparent 45%), radial-gradient(circle at 85% 75%, rgb(255 255 255 / 0.7), transparent 40%)",
+              }}
+            />
+            <div className="relative px-8 py-12 sm:px-12 sm:py-14">
+              <h2
+                id="banner-1-4-5"
+                className="font-display text-3xl font-extrabold leading-tight tracking-tight text-primary-fg sm:text-4xl"
+              >
+                Tu vocación, con evidencia
+              </h2>
+              <p className="mt-3 max-w-xl text-lg text-primary-fg/90">
+                Todo el texto de esta página es texto real: se agranda, lo lee el
+                lector de pantalla y se adapta al contraste. Nada está impreso
+                dentro de una imagen.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ── Proceso (secuencia real → numerada) ────────────── */}
         <section
           aria-labelledby="proceso"
